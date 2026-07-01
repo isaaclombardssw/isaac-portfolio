@@ -162,34 +162,25 @@ export function LeadCaptureChat() {
                                             variant="ghost"
                                             className="flex h-8 items-center gap-1 rounded-md pl-1 pr-2 text-xs hover:bg-black/10 focus-visible:ring-1 focus-visible:ring-brand focus-visible:ring-offset-0"
                                         >
-                                            <AnimatePresence mode="wait">
-                                                <motion.div
-                                                    key={selectedModel}
-                                                    initial={{ opacity: 0, y: -5 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: 5 }}
-                                                    transition={{ duration: 0.15 }}
-                                                    className="flex items-center gap-1"
-                                                >
-                                                    {MODEL_ICONS[selectedModel]}
-                                                    {/* Reserve the widest label's width (left-aligned) so the trigger never shifts. */}
-                                                    <span className="grid justify-items-start">
-                                                        {MODELS.map((m) => (
-                                                            <span
-                                                                key={m}
-                                                                aria-hidden
-                                                                className="invisible col-start-1 row-start-1 whitespace-nowrap"
-                                                            >
-                                                                {m}
-                                                            </span>
-                                                        ))}
-                                                        <span className="col-start-1 row-start-1 whitespace-nowrap">
-                                                            {selectedModel}
+                                            <div className="flex items-center gap-1">
+                                                {MODEL_ICONS[selectedModel]}
+                                                {/* Reserve the widest label's width (left-aligned) so the trigger never shifts. */}
+                                                <span className="grid justify-items-start">
+                                                    {MODELS.map((m) => (
+                                                        <span
+                                                            key={m}
+                                                            aria-hidden
+                                                            className="invisible col-start-1 row-start-1 whitespace-nowrap"
+                                                        >
+                                                            {m}
                                                         </span>
+                                                    ))}
+                                                    <span className="col-start-1 row-start-1 whitespace-nowrap">
+                                                        {selectedModel}
                                                     </span>
-                                                    <ChevronDown className="h-3 w-3 opacity-50" />
-                                                </motion.div>
-                                            </AnimatePresence>
+                                                </span>
+                                                <ChevronDown className="h-3 w-3 opacity-50" />
+                                            </div>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent
