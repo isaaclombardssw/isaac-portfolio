@@ -44,17 +44,12 @@ export function ConnectSection() {
   return (
     <section ref={ref} id="connect" className="relative h-[180vh] bg-background text-foreground">
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden p-8">
-        <CosmicSpectrum color="original" blur progress={scrollYProgress} />
+        <CosmicSpectrum color="violet" blur progress={scrollYProgress} />
 
         <div className="relative z-10 flex flex-col items-center gap-10 text-center">
-          <div className="flex flex-col items-center gap-3">
-            <p className="text-sm font-medium uppercase tracking-[0.35em] text-foreground/50">
-              The end &mdash; for now
-            </p>
-            <h2 className="font-heading text-4xl font-semibold tracking-tight md:text-6xl">
-              Let&apos;s connect
-            </h2>
-          </div>
+          <h2 className="font-heading text-4xl font-semibold tracking-tight text-brand-foreground md:text-6xl">
+            Let&apos;s connect
+          </h2>
 
           <ul className="flex items-center gap-8">
             {SOCIALS.map(({ label, href, Icon }) => (
@@ -64,15 +59,15 @@ export function ConnectSection() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={label}
-                  className="group relative grid size-16 place-items-center rounded-full text-foreground transition-transform duration-300 ease-out hover:scale-110 focus-visible:scale-110 focus-visible:outline-none md:size-20"
+                  className="group relative grid size-16 place-items-center rounded-full text-brand-foreground transition-transform duration-300 ease-out hover:scale-110 focus-visible:scale-110 focus-visible:outline-none md:size-20"
                 >
-                  {/* Violet glow halo, revealed on hover/focus. */}
+                  {/* White glow halo, revealed on hover/focus. */}
                   <span
                     aria-hidden
                     className="absolute inset-0 rounded-full opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
-                    style={{ background: "color-mix(in oklab, var(--brand) 45%, transparent)" }}
+                    style={{ background: "color-mix(in oklab, var(--brand-foreground) 55%, transparent)" }}
                   />
-                  <Icon className="relative size-8 text-foreground transition-[filter] duration-300 md:size-9 group-hover:[filter:drop-shadow(0_0_12px_rgba(124,58,237,0.75))] group-focus-visible:[filter:drop-shadow(0_0_12px_rgba(124,58,237,0.75))]" />
+                  <Icon className="relative size-8 text-brand-foreground transition-[filter] duration-300 md:size-9 group-hover:[filter:drop-shadow(0_0_12px_rgba(255,255,255,0.95))] group-focus-visible:[filter:drop-shadow(0_0_12px_rgba(255,255,255,0.95))]" />
                 </a>
               </li>
             ))}

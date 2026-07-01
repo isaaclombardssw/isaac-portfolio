@@ -7,6 +7,8 @@ import { useRef } from "react";
 const THEMES = {
   original: ["#340B05", "#0358F7", "#5092C7", "#E1ECFE", "#FFD400", "#FA3D1D", "#FD02F5", "#FFC0FD"],
   purple: ["#F3E8FF", "#E9D5FF", "#D8B4FE", "#C084FC", "#A855F7", "#9333EA", "#7C3AED", "#6B21B6"],
+  // Dark spread around the brand violet — darkest at the bottom, fading up.
+  violet: ["#15062E", "#2A0A54", "#45149C", "#6D28D9", "#7C3AED", "#8B37F0", "#A855F7", "#C99CFF"],
 } as const;
 
 const PATHS = [
@@ -40,15 +42,14 @@ export function CosmicSpectrum({
   const own = useScroll({ target: ref, offset: ["start end", "start start"] });
   const p = progress ?? own.scrollYProgress;
 
-  // Sit as a sliver, then pop up with momentum.
-  const scaleY = useTransform(p, [0, 0.5, 0.82, 1], [0.14, 0.22, 0.92, 1]);
-  const opacity = useTransform(p, [0, 0.06], [0, 1]);
+  // Sit as a sliver, then rise smoothly and pop up with momentum near the end.
+  const scaleY = useTransform(p, [0, 0.4, 0.75, 1], [0.16, 0.34, 0.86, 1]);
   const colors = THEMES[color];
 
   return (
     <div ref={ref} className="pointer-events-none absolute inset-x-0 bottom-0 h-[74%]">
       <motion.svg
-        style={{ scaleY, opacity, transformOrigin: "bottom" }}
+        style={{ scaleY, transformOrigin: "bottom" }}
         className="h-full w-full"
         viewBox="0 0 1567 584"
         preserveAspectRatio="none"
