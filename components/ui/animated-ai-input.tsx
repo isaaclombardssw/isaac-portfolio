@@ -9,29 +9,29 @@ import {
     Loader2,
     Megaphone,
     Palette,
+    Paperclip,
     Terminal,
 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { containsEmail } from "@/lib/email";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Textarea } from "@/components/ui/textarea";
+import { containsEmail } from "@/lib/email";
+import { cn } from "@/lib/utils";
 
 interface UseAutoResizeTextareaProps {
     minHeight: number;
     maxHeight?: number;
 }
 
-function useAutoResizeTextarea({
-    minHeight,
-    maxHeight,
-}: UseAutoResizeTextareaProps) {
+function useAutoResizeTextarea({ minHeight, maxHeight }: UseAutoResizeTextareaProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const adjustHeight = useCallback(
@@ -45,15 +45,10 @@ function useAutoResizeTextarea({
             }
 
             textarea.style.height = `${minHeight}px`;
-
             const newHeight = Math.max(
                 minHeight,
-                Math.min(
-                    textarea.scrollHeight,
-                    maxHeight ?? Number.POSITIVE_INFINITY
-                )
+                Math.min(textarea.scrollHeight, maxHeight ?? Number.POSITIVE_INFINITY)
             );
-
             textarea.style.height = `${newHeight}px`;
         },
         [minHeight, maxHeight]
@@ -61,9 +56,7 @@ function useAutoResizeTextarea({
 
     useEffect(() => {
         const textarea = textareaRef.current;
-        if (textarea) {
-            textarea.style.height = `${minHeight}px`;
-        }
+        if (textarea) textarea.style.height = `${minHeight}px`;
     }, [minHeight]);
 
     useEffect(() => {
@@ -75,331 +68,232 @@ function useAutoResizeTextarea({
     return { textareaRef, adjustHeight };
 }
 
-/** Persona "models" — each a person doing a playful action, not a provider logo. */
-const PERSONAS = [
-    { id: "marketing-isaac-mini", icon: Megaphone },
-    { id: "design-consultant-4-pro", icon: Palette },
-    { id: "full-stack-isaac-o", icon: Terminal },
-    { id: "brand-strategy-3.5", icon: Lightbulb },
-    { id: "scrum-master-turbo", icon: ClipboardList },
-] as const;
+// Persona "models" — people/action icons instead of provider logos.
+const MODELS = [
+    "marketing-isaac-mini",
+    "design-consultant-4-pro",
+    "full-stack-isaac-o",
+    "brand-strategy-3.5",
+    "scrum-master-turbo",
+];
 
-type PersonaId = (typeof PERSONAS)[number]["id"];
-
-const PERSONA_ICON: Record<PersonaId, typeof Megaphone> = Object.fromEntries(
-    PERSONAS.map((p) => [p.id, p.icon])
-) as Record<PersonaId, typeof Megaphone>;
-
-type SendState = "idle" | "sending" | "sent" | "error";
-
-async function postContact(payload: {
-    message: string;
-    replyEmail?: string;
-}): Promise<boolean> {
-    try {
-        const res = await fetch("/api/contact", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-        });
-        return res.ok;
-    } catch {
-        return false;
-    }
-}
+const MODEL_ICONS: Record<string, React.ReactNode> = {
+    "marketing-isaac-mini": <Megaphone className="h-4 w-4" />,
+    "design-consultant-4-pro": <Palette className="h-4 w-4" />,
+    "full-stack-isaac-o": <Terminal className="h-4 w-4" />,
+    "brand-strategy-3.5": <Lightbulb className="h-4 w-4" />,
+    "scrum-master-turbo": <ClipboardList className="h-4 w-4" />,
+};
 
 export function LeadCaptureChat() {
     const [value, setValue] = useState("");
-    const [selectedPersona, setSelectedPersona] =
-        useState<PersonaId>("full-stack-isaac-o");
-    const { textareaRef, adjustHeight } = useAutoResizeTextarea({
-        minHeight: 88,
-        maxHeight: 300,
-    });
-
-    const [status, setStatus] = useState<SendState>("idle");
-
-    // Email follow-up (only when the first message carried no email).
-    const [askEmail, setAskEmail] = useState(false);
+    const { textareaRef, adjustHeight } = useAutoResizeTextarea({ minHeight: 72, maxHeight: 300 });
+    const [selectedModel, setSelectedModel] = useState("full-stack-isaac-o");
+    const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+    const [showEmail, setShowEmail] = useState(false);
     const [replyEmail, setReplyEmail] = useState("");
-    const [emailStatus, setEmailStatus] = useState<SendState>("idle");
+    const [emailSent, setEmailSent] = useState(false);
+    const lastMessage = useRef("");
 
-    // The persona-tagged message we sent, reused for the follow-up POST.
-    const sentMessageRef = useRef<string>("");
+    const post = (body: Record<string, string>) =>
+        fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+        });
 
-    const SelectedIcon = PERSONA_ICON[selectedPersona];
-
-    const handleSubmit = async () => {
+    const send = async () => {
         const message = value.trim();
         if (!message || status === "sending") return;
-
-        const tagged = `[${selectedPersona}] ${message}`;
-        sentMessageRef.current = tagged;
-
         setStatus("sending");
-        const ok = await postContact({ message: tagged });
-
-        if (!ok) {
+        try {
+            const res = await post({ message: `[${selectedModel}] ${message}` });
+            if (!res.ok) throw new Error();
+            lastMessage.current = message;
+            setValue("");
+            adjustHeight(true);
+            setStatus("sent");
+            if (!containsEmail(message)) setShowEmail(true);
+        } catch {
             setStatus("error");
-            return;
-        }
-
-        setStatus("sent");
-        adjustHeight(true);
-        // No email in the message → offer to leave one for a reply.
-        if (!containsEmail(message)) {
-            setAskEmail(true);
         }
     };
 
-    const handleEmailSubmit = async () => {
+    const sendEmail = async () => {
         const email = replyEmail.trim();
-        if (!email || emailStatus === "sending") return;
-
-        setEmailStatus("sending");
-        const ok = await postContact({
-            message: sentMessageRef.current,
-            replyEmail: email,
-        });
-        setEmailStatus(ok ? "sent" : "error");
+        if (!email) return;
+        try {
+            await post({ message: `[${selectedModel}] ${lastMessage.current}`, replyEmail: email });
+            setEmailSent(true);
+            setShowEmail(false);
+        } catch {
+            /* keep the field open on failure */
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === "Enter" && !e.shiftKey) {
+        if (e.key === "Enter" && !e.shiftKey && value.trim()) {
             e.preventDefault();
-            handleSubmit();
+            send();
         }
     };
 
-    const sending = status === "sending";
-
     return (
-        <div className="w-full max-w-2xl">
-            <AnimatePresence mode="wait">
-                {status === "sent" ? (
-                    <motion.div
-                        key="sent"
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -12 }}
-                        transition={{ duration: 0.3 }}
-                        className="rounded-2xl border border-brand/15 bg-white p-6 shadow-[0_1px_30px_-12px_rgba(109,40,217,0.35)]"
-                    >
-                        <div className="flex items-center gap-3">
-                            <span className="flex size-9 items-center justify-center rounded-full bg-brand text-brand-foreground">
-                                <Check className="size-5" />
-                            </span>
-                            <div>
-                                <p className="text-lg font-medium text-foreground">
-                                    Sent — I&apos;ll be in touch
-                                </p>
-                                <p className="text-sm text-brand-muted">
-                                    Thanks for reaching out.
-                                </p>
-                            </div>
-                        </div>
-
-                        <AnimatePresence>
-                            {askEmail && emailStatus !== "sent" && (
-                                <motion.div
-                                    key="ask-email"
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: "auto" }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="overflow-hidden"
-                                >
-                                    <div className="mt-5 border-t border-brand/10 pt-5">
-                                        <label
-                                            htmlFor="reply-email"
-                                            className="text-sm text-foreground/70"
-                                        >
-                                            Want a reply? Add an email —
-                                            optional.
-                                        </label>
-                                        <div className="mt-2 flex items-center gap-2">
-                                            <input
-                                                id="reply-email"
-                                                type="email"
-                                                inputMode="email"
-                                                autoComplete="email"
-                                                value={replyEmail}
-                                                placeholder="you@example.com"
-                                                onChange={(e) =>
-                                                    setReplyEmail(e.target.value)
-                                                }
-                                                onKeyDown={(e) => {
-                                                    if (e.key === "Enter") {
-                                                        e.preventDefault();
-                                                        handleEmailSubmit();
-                                                    }
-                                                }}
-                                                className="h-10 flex-1 rounded-xl border border-brand/20 bg-white px-3 text-sm text-foreground outline-none placeholder:text-foreground/30 focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/20"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={handleEmailSubmit}
-                                                disabled={
-                                                    !replyEmail.trim() ||
-                                                    emailStatus === "sending"
-                                                }
-                                                className="flex h-10 items-center gap-1.5 rounded-xl bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-deep disabled:opacity-40"
-                                            >
-                                                {emailStatus === "sending" ? (
-                                                    <Loader2 className="size-4 animate-spin" />
-                                                ) : (
-                                                    <ArrowRight className="size-4" />
-                                                )}
-                                                Add
-                                            </button>
-                                        </div>
-                                        {emailStatus === "error" && (
-                                            <p className="mt-2 text-sm text-destructive">
-                                                Couldn&apos;t save that —
-                                                try again.
-                                            </p>
-                                        )}
-                                    </div>
-                                </motion.div>
+        <div className="w-full max-w-2xl py-4">
+            <div className="rounded-2xl bg-black/5 p-1.5">
+                <div className="relative flex flex-col">
+                    <div className="overflow-y-auto" style={{ maxHeight: "400px" }}>
+                        <Textarea
+                            id="lead-input"
+                            value={value}
+                            placeholder="What can I build for you?"
+                            className={cn(
+                                "w-full resize-none rounded-xl rounded-b-none border-none bg-black/5 px-4 py-3 placeholder:text-black/70 focus-visible:ring-0 focus-visible:ring-offset-0",
+                                "min-h-[72px]"
                             )}
-                        </AnimatePresence>
+                            ref={textareaRef}
+                            onKeyDown={handleKeyDown}
+                            onChange={(e) => {
+                                setValue(e.target.value);
+                                adjustHeight();
+                            }}
+                        />
+                    </div>
 
-                        {emailStatus === "sent" && (
-                            <p className="mt-4 border-t border-brand/10 pt-4 text-sm text-brand-muted">
-                                Got it — I&apos;ll reply to {replyEmail.trim()}.
-                            </p>
-                        )}
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        key="form"
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -12 }}
-                        transition={{ duration: 0.3 }}
-                        className="rounded-2xl border border-brand/15 bg-white p-1.5 shadow-[0_1px_30px_-12px_rgba(109,40,217,0.35)]"
-                    >
-                        <div className="relative flex flex-col">
-                            <div
-                                className="overflow-y-auto"
-                                style={{ maxHeight: "300px" }}
-                            >
-                                <Textarea
-                                    id="lead-capture-input"
-                                    value={value}
-                                    disabled={sending}
-                                    placeholder="What can I build for you?"
-                                    className={cn(
-                                        "w-full resize-none rounded-xl rounded-b-none border-none bg-transparent px-4 py-3 text-foreground placeholder:text-foreground/40 focus-visible:ring-0 focus-visible:ring-offset-0",
-                                        "min-h-[88px]"
-                                    )}
-                                    ref={textareaRef}
-                                    onKeyDown={handleKeyDown}
-                                    onChange={(e) => {
-                                        setValue(e.target.value);
-                                        adjustHeight();
-                                        if (status === "error")
-                                            setStatus("idle");
-                                    }}
-                                />
-                            </div>
-
-                            <div className="flex h-14 items-center rounded-b-xl">
-                                <div className="absolute bottom-3 left-3 right-3 flex w-[calc(100%-24px)] items-center justify-between">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <button
-                                                type="button"
-                                                className="flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-brand transition-colors hover:bg-brand/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
-                                            >
-                                                <AnimatePresence mode="wait">
-                                                    <motion.span
-                                                        key={selectedPersona}
-                                                        initial={{
-                                                            opacity: 0,
-                                                            y: -5,
-                                                        }}
-                                                        animate={{
-                                                            opacity: 1,
-                                                            y: 0,
-                                                        }}
-                                                        exit={{
-                                                            opacity: 0,
-                                                            y: 5,
-                                                        }}
-                                                        transition={{
-                                                            duration: 0.15,
-                                                        }}
-                                                        className="flex items-center gap-1.5"
-                                                    >
-                                                        <SelectedIcon className="size-4" />
-                                                        {selectedPersona}
-                                                    </motion.span>
-                                                </AnimatePresence>
-                                                <ChevronDown className="size-3 opacity-60" />
-                                            </button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent
-                                            align="start"
-                                            className="min-w-[13rem] border-brand/15"
+                    <div className="flex h-14 items-center rounded-b-xl bg-black/5">
+                        <div className="absolute bottom-3 left-3 right-3 flex w-[calc(100%-24px)] items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            className="flex h-8 items-center gap-1 rounded-md pl-1 pr-2 text-xs hover:bg-black/10 focus-visible:ring-1 focus-visible:ring-brand focus-visible:ring-offset-0"
                                         >
-                                            {PERSONAS.map((persona) => {
-                                                const Icon = persona.icon;
-                                                return (
-                                                    <DropdownMenuItem
-                                                        key={persona.id}
-                                                        onSelect={() =>
-                                                            setSelectedPersona(
-                                                                persona.id
-                                                            )
-                                                        }
-                                                        className="flex items-center justify-between gap-2"
-                                                    >
-                                                        <span className="flex items-center gap-2">
-                                                            <Icon className="size-4 text-brand" />
-                                                            <span>
-                                                                {persona.id}
-                                                            </span>
-                                                        </span>
-                                                        {selectedPersona ===
-                                                            persona.id && (
-                                                            <Check className="size-4 text-brand" />
-                                                        )}
-                                                    </DropdownMenuItem>
-                                                );
-                                            })}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-
-                                    <button
-                                        type="button"
-                                        aria-label="Send message"
-                                        disabled={!value.trim() || sending}
-                                        onClick={handleSubmit}
+                                            <AnimatePresence mode="wait">
+                                                <motion.div
+                                                    key={selectedModel}
+                                                    initial={{ opacity: 0, y: -5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 5 }}
+                                                    transition={{ duration: 0.15 }}
+                                                    className="flex items-center gap-1"
+                                                >
+                                                    {MODEL_ICONS[selectedModel]}
+                                                    {selectedModel}
+                                                    <ChevronDown className="h-3 w-3 opacity-50" />
+                                                </motion.div>
+                                            </AnimatePresence>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
                                         className={cn(
-                                            "flex size-9 items-center justify-center rounded-lg bg-brand text-brand-foreground transition-all",
-                                            "hover:bg-brand-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40",
-                                            "disabled:cursor-not-allowed disabled:opacity-30"
+                                            "min-w-[13rem] border-black/10",
+                                            "bg-gradient-to-b from-white via-white to-neutral-100"
                                         )}
                                     >
-                                        {sending ? (
-                                            <Loader2 className="size-4 animate-spin" />
-                                        ) : (
-                                            <ArrowRight className="size-4" />
+                                        {MODELS.map((model) => (
+                                            <DropdownMenuItem
+                                                key={model}
+                                                onSelect={() => setSelectedModel(model)}
+                                                className="flex items-center justify-between gap-2"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    {MODEL_ICONS[model]}
+                                                    <span>{model}</span>
+                                                </div>
+                                                {selectedModel === model && (
+                                                    <Check className="h-4 w-4 text-brand" />
+                                                )}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                                <div className="mx-0.5 h-4 w-px bg-black/10" />
+                                <label
+                                    className={cn(
+                                        "cursor-pointer rounded-lg bg-black/5 p-2 text-black/40",
+                                        "hover:bg-black/10 hover:text-black focus-visible:ring-1 focus-visible:ring-brand focus-visible:ring-offset-0"
+                                    )}
+                                    aria-label="Attach a brief"
+                                >
+                                    <input type="file" className="hidden" />
+                                    <Paperclip className="h-4 w-4 transition-colors" />
+                                </label>
+                            </div>
+                            <button
+                                type="button"
+                                className={cn(
+                                    "rounded-lg p-2 transition-colors",
+                                    value.trim() ? "bg-brand text-brand-foreground" : "bg-black/5"
+                                )}
+                                aria-label="Send message"
+                                disabled={!value.trim() || status === "sending"}
+                                onClick={send}
+                            >
+                                {status === "sending" ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <ArrowRight
+                                        className={cn(
+                                            "h-4 w-4 transition-opacity duration-200",
+                                            value.trim() ? "opacity-100" : "opacity-30"
                                         )}
+                                    />
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Status + optional email follow-up */}
+            <AnimatePresence>
+                {status === "sent" && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="mt-3 px-1 text-sm text-foreground/70"
+                    >
+                        {emailSent ? (
+                            "Got it — I'll be in touch."
+                        ) : showEmail ? (
+                            <div className="flex flex-col gap-2">
+                                <span>Sent. Want to add an email so I can reply?</span>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="email"
+                                        value={replyEmail}
+                                        onChange={(e) => setReplyEmail(e.target.value)}
+                                        onKeyDown={(e) => e.key === "Enter" && sendEmail()}
+                                        placeholder="you@email.com"
+                                        className="flex-1 rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-foreground placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={sendEmail}
+                                        disabled={!replyEmail.trim()}
+                                        className="rounded-lg bg-brand px-3 py-2 text-brand-foreground disabled:opacity-40"
+                                    >
+                                        Add
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            "Sent — I'll be in touch."
+                        )}
                     </motion.div>
                 )}
+                {status === "error" && (
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="mt-3 px-1 text-sm text-red-600"
+                    >
+                        Something went wrong — try again?
+                    </motion.p>
+                )}
             </AnimatePresence>
-
-            {status === "error" && (
-                <p className="mt-3 text-center text-sm text-destructive">
-                    Something went wrong sending that. Please try again.
-                </p>
-            )}
         </div>
     );
 }

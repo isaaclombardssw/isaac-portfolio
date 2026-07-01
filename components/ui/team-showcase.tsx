@@ -1,148 +1,152 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'motion/react';
-import { ArrowUpRight, Disc3 } from 'lucide-react';
-import { SiSpotify, SiTidal } from 'react-icons/si';
-import { cn } from '../../lib/utils';
+import { ArrowUpRight, Disc3 } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import { SiSpotify, SiTidal } from "react-icons/si";
+import { cn } from "../../lib/utils";
 
-/**
- * MUSIC SHOWCASE — reworked from the 21st.dev team-showcase into a grid of
- * cards for Isaac Rozsa's music (isaacrozsa.com). Each card is tinted with its
- * route's accent colour, sourced from the rozsa project's favicons / album art.
- */
-
-export type MusicKind = 'home' | 'album' | 'single' | 'listen' | 'soon';
-
-export interface MusicCard {
+export interface MusicItem {
   id: string;
-  /** Big title on the card. */
-  title: string;
-  /** Small kicker above the title (e.g. "Album", "Single"). */
-  kind: string;
-  /** One-line description. */
-  blurb?: string;
-  /** Destination. '#' renders as a non-navigating placeholder. */
+  name: string;
+  role: string;
   href: string;
-  /** Accent colour (hex) — tints the whole card. */
   accent: string;
-  /** Favicon path under /public, if the card has one. */
-  icon?: string;
-  /** Built-in glyph for streaming/placeholder cards. */
-  glyph?: 'spotify' | 'tidal' | 'disc';
-  /** Marks unfinished cards (dimmed, no navigation). */
+  icon?: string; // favicon path
+  platform?: "spotify" | "tidal";
   placeholder?: boolean;
 }
 
-interface MusicShowcaseProps {
-  cards: MusicCard[];
+function Glyph({ item }: { item: MusicItem }) {
+  if (item.platform === "spotify") return <SiSpotify className="h-9 w-9" style={{ color: item.accent }} />;
+  if (item.platform === "tidal") return <SiTidal className="h-9 w-9" style={{ color: item.accent }} />;
+  if (item.icon) return <Image src={item.icon} alt="" width={40} height={40} className="h-10 w-10" />;
+  return <Disc3 className="h-9 w-9" style={{ color: item.accent }} />;
 }
 
-export default function MusicShowcase({ cards }: MusicShowcaseProps) {
+export default function MusicShowcase({ items }: { items: MusicItem[] }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
+  const col1 = items.filter((_, i) => i % 3 === 0);
+  const col2 = items.filter((_, i) => i % 3 === 1);
+  const col3 = items.filter((_, i) => i % 3 === 2);
+  const columns = [
+    { items: col1, offset: "", size: "w-[150px] h-[160px]" },
+    { items: col2, offset: "mt-[68px]", size: "w-[168px] h-[178px]" },
+    { items: col3, offset: "mt-[32px]", size: "w-[158px] h-[168px]" },
+  ];
+
   return (
-    <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-3 select-none sm:gap-4 md:grid-cols-4">
-      {cards.map((card) => (
-        <MusicCardTile
-          key={card.id}
-          card={card}
-          dimmed={hoveredId !== null && hoveredId !== card.id}
-          onHover={setHoveredId}
-        />
-      ))}
+    <div className="mx-auto flex w-full max-w-5xl select-none flex-col items-start gap-10 px-4 md:flex-row md:gap-14 md:px-6">
+      {/* Left: staggered tile grid */}
+      <div className="flex flex-shrink-0 gap-3">
+        {columns.map((col, ci) => (
+          <div key={ci} className={cn("flex flex-col gap-3", col.offset)}>
+            {col.items.map((item) => (
+              <Tile
+                key={item.id}
+                item={item}
+                className={col.size}
+                hoveredId={hoveredId}
+                onHover={setHoveredId}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* Right: name list */}
+      <div className="flex w-full flex-1 flex-col gap-5 pt-0 md:pt-2">
+        {items.map((item) => (
+          <ItemRow key={item.id} item={item} hoveredId={hoveredId} onHover={setHoveredId} />
+        ))}
+      </div>
     </div>
   );
 }
 
-function Glyph({ glyph, className }: { glyph?: MusicCard['glyph']; className?: string }) {
-  if (glyph === 'spotify') return <SiSpotify className={className} />;
-  if (glyph === 'tidal') return <SiTidal className={className} />;
-  return <Disc3 className={className} />;
-}
-
-function MusicCardTile({
-  card,
-  dimmed,
+function Tile({
+  item,
+  className,
+  hoveredId,
   onHover,
 }: {
-  card: MusicCard;
-  dimmed: boolean;
+  item: MusicItem;
+  className: string;
+  hoveredId: string | null;
   onHover: (id: string | null) => void;
 }) {
-  const isPlaceholder = card.placeholder ?? card.href === '#';
-  const accent = card.accent;
-
-  const content = (
-    <motion.div
-      onMouseEnter={() => onHover(card.id)}
-      onMouseLeave={() => onHover(null)}
-      whileHover={isPlaceholder ? undefined : { y: -6 }}
-      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
-      className={cn(
-        'group relative flex h-full min-h-[190px] flex-col justify-between overflow-hidden rounded-2xl border p-5 transition-opacity duration-300',
-        dimmed ? 'opacity-55' : 'opacity-100',
-        isPlaceholder ? 'cursor-default' : 'cursor-pointer',
-      )}
-      style={{
-        borderColor: `color-mix(in oklab, ${accent} 32%, transparent)`,
-        background: `linear-gradient(160deg, color-mix(in oklab, ${accent} 12%, white) 0%, color-mix(in oklab, ${accent} 4%, white) 100%)`,
-      }}
-    >
-      {/* accent glow that blooms on hover */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
-        style={{ background: accent }}
-      />
-
-      <div className="relative flex items-start justify-between">
-        <span
-          className="flex h-11 w-11 items-center justify-center rounded-xl ring-1"
-          style={{
-            background: `color-mix(in oklab, ${accent} 16%, white)`,
-            color: accent,
-            boxShadow: `0 0 0 1px color-mix(in oklab, ${accent} 20%, transparent)`,
-          }}
-        >
-          {card.icon ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={card.icon} alt="" className="h-6 w-6" />
-          ) : (
-            <Glyph glyph={card.glyph} className="h-5 w-5" />
-          )}
-        </span>
-
-        {!isPlaceholder && (
-          <ArrowUpRight
-            className="h-5 w-5 -translate-y-0.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
-            style={{ color: accent }}
-          />
-        )}
-      </div>
-
-      <div className="relative">
-        <p
-          className="text-[10px] font-semibold uppercase tracking-[0.2em]"
-          style={{ color: `color-mix(in oklab, ${accent} 78%, black)` }}
-        >
-          {card.kind}
-        </p>
-        <h3 className="mt-1 text-lg font-semibold leading-tight tracking-tight text-foreground">
-          {card.title}
-        </h3>
-        {card.blurb && (
-          <p className="mt-1 text-xs leading-snug text-foreground/55">{card.blurb}</p>
-        )}
-      </div>
-    </motion.div>
-  );
-
-  if (isPlaceholder) return content;
+  const isActive = hoveredId === item.id;
+  const isDimmed = hoveredId !== null && !isActive;
 
   return (
-    <a href={card.href} target="_blank" rel="noopener noreferrer" className="block h-full">
-      {content}
+    <a
+      href={item.href}
+      target={item.href.startsWith("http") ? "_blank" : undefined}
+      rel="noopener noreferrer"
+      onMouseEnter={() => onHover(item.id)}
+      onMouseLeave={() => onHover(null)}
+      className={cn(
+        "flex flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-black/5 transition-all duration-300",
+        className,
+        isDimmed ? "opacity-45" : "opacity-100",
+        isActive ? "scale-[1.03] shadow-lg" : "",
+      )}
+      style={{
+        background: `radial-gradient(circle at 30% 25%, ${item.accent}44, ${item.accent}1f 55%, #ffffff 100%)`,
+      }}
+    >
+      <Glyph item={item} />
+    </a>
+  );
+}
+
+function ItemRow({
+  item,
+  hoveredId,
+  onHover,
+}: {
+  item: MusicItem;
+  hoveredId: string | null;
+  onHover: (id: string | null) => void;
+}) {
+  const isActive = hoveredId === item.id;
+  const isDimmed = hoveredId !== null && !isActive;
+
+  return (
+    <a
+      href={item.href}
+      target={item.href.startsWith("http") ? "_blank" : undefined}
+      rel="noopener noreferrer"
+      className={cn("block cursor-pointer transition-opacity duration-300", isDimmed ? "opacity-50" : "opacity-100")}
+      onMouseEnter={() => onHover(item.id)}
+      onMouseLeave={() => onHover(null)}
+    >
+      <div className="flex items-center gap-2.5">
+        <span
+          className="h-3 w-4 flex-shrink-0 rounded-[5px] transition-all duration-300"
+          style={{ backgroundColor: isActive ? item.accent : "color-mix(in oklab, var(--foreground) 25%, transparent)", width: isActive ? 20 : undefined }}
+        />
+        <span
+          className={cn(
+            "text-[18px] font-semibold leading-none tracking-tight transition-colors duration-300",
+            isActive ? "text-foreground" : "text-foreground/80",
+          )}
+        >
+          {item.name}
+        </span>
+        <span
+          className={cn(
+            "ml-0.5 flex items-center transition-all duration-200",
+            isActive ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0",
+          )}
+        >
+          <ArrowUpRight className="h-4 w-4" style={{ color: item.accent }} />
+        </span>
+      </div>
+      <p className="mt-1.5 pl-[27px] text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        {item.placeholder ? `${item.role} · coming soon` : item.role}
+      </p>
     </a>
   );
 }

@@ -4,9 +4,9 @@
  * SECTION 6 — SOCIALS / END
  * Component: https://21st.dev/@aliimam/components/cosmos-spectrum
  *
- * Full-viewport finale: brand-violet background with the self-contained
- * CosmicSpectrum backdrop (canvas starfield + motion equalizer — no CDN GSAP)
- * behind two social icons rendered white and glowing on hover.
+ * Full-viewport finale: violet→dark background with the real cosmos-spectrum
+ * gradient bars rising on scroll, behind two social icons rendered white and
+ * glowing on hover.
  */
 
 import { motion } from "motion/react";
@@ -49,7 +49,7 @@ export function ConnectSection() {
   return (
     <section
       id="connect"
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-brand p-8 text-brand-foreground"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-brand via-brand-deep to-[#09040f] p-8 text-brand-foreground"
     >
       <CosmicSpectrum />
 
@@ -64,7 +64,7 @@ export function ConnectSection() {
           <p className="text-sm font-medium uppercase tracking-[0.35em] text-brand-foreground/60">
             The end &mdash; for now
           </p>
-          <h2 className="text-4xl font-semibold tracking-tight md:text-6xl">
+          <h2 className="font-heading text-4xl font-semibold tracking-tight md:text-6xl">
             Let&apos;s connect
           </h2>
         </motion.div>
