@@ -64,23 +64,18 @@ function PosterFace({ demo, large }: { demo: Demo; large?: boolean }) {
 // (deviation from white, so the screenshot keeps its true colours) and a light
 // screen adds just the bright sheen that reads as glass.
 function PosterReflection() {
-  // Shift the (bright) reflection down so its mean sits near mid-grey, then blend
-  // with hard-light: grey areas read neutral (poster colour shows through),
-  // brights add glassy glare, darks add reflected structure — a visible
-  // reflection with no net wash. `contrast` controls how strong it reads.
-  const style = {
-    transform: "translateY(1.5%) scale(1.08)",
-    transformOrigin: "left center",
-    filter: "brightness(0.68) contrast(1.25)",
-  } as const;
+  // The reflection is pre-baked to mid-grey (brightness 0.68 + contrast 1.25 in
+  // the PNG) so no live CSS filter is needed — a filter inside the matrix3d warp
+  // rasterises low-res and looks pixelated. Hard-light then keeps the poster
+  // colour (grey = neutral), adds glassy glare on brights, structure on darks.
   return (
     <Image
-      src="/billboard/billboard-reflection.png"
+      src="/billboard/billboard-reflection-hl.png"
       alt=""
       aria-hidden
       fill
       sizes="40vw"
-      style={style}
+      style={{ transform: "translateY(1.5%) scale(1.08)", transformOrigin: "left center" }}
       className="pointer-events-none object-cover mix-blend-hard-light"
     />
   );
