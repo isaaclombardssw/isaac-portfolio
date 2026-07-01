@@ -51,13 +51,6 @@ const posterVariants = {
 };
 const ROLL_TRANSITION = { type: "spring", stiffness: 190, damping: 26, mass: 1 } as const;
 
-// The small caption under the controls, rising in the same direction as the roll.
-const nameVariants = {
-  enter: (dir: number) => ({ opacity: 0, y: dir >= 0 ? 8 : -8 }),
-  center: { opacity: 1, y: 0 },
-  exit: (dir: number) => ({ opacity: 0, y: dir >= 0 ? -8 : 8 }),
-};
-
 // Homography mapping the REF_W×REF_H rectangle onto the four dst corners (px).
 function quadMatrix3d(dst: [number, number][]): string {
   const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = dst; // TL, TR, BR, BL
@@ -225,22 +218,6 @@ export function OneShotsSection() {
             >
               <ChevronDown className="size-5" />
             </button>
-          </div>
-          <div className="mt-3 h-4 overflow-hidden text-center">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.p
-                key={demo.name}
-                custom={direction}
-                variants={nameVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="text-xs text-foreground/50"
-              >
-                {demo.name}
-              </motion.p>
-            </AnimatePresence>
           </div>
         </div>
       </div>
