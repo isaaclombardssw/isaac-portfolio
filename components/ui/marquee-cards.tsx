@@ -10,6 +10,8 @@ export type MarqueeCard = {
   description?: string;
   image?: string;
   icon?: LucideIcon | IconType;
+  /** Where the card links. Use "#id" to scroll in-page; http(s) opens in a new tab. */
+  href?: string;
 };
 
 /**
@@ -59,8 +61,11 @@ export function MarqueeCards({ cards, durationMs }: { cards: MarqueeCard[]; dura
 
 function Card({ card }: { card: MarqueeCard }) {
   const Icon = card.icon;
-  return (
-    <div className="group relative mx-4 h-[20rem] w-56 overflow-hidden transition-all duration-300 hover:scale-90">
+  const external = card.href?.startsWith("http");
+  const className =
+    "group relative mx-4 block h-[20rem] w-56 shrink-0 overflow-hidden transition-all duration-300 hover:scale-90";
+  const inner = (
+    <>
       {card.image ? (
         // biome-ignore lint/performance/noImgElement: marquee card art, swapped by Isaac
         <img src={card.image} alt="" className="h-full w-full object-cover" />
@@ -75,6 +80,13 @@ function Card({ card }: { card: MarqueeCard }) {
         <p className="text-center text-lg font-semibold text-white">{card.title}</p>
         {card.description && <p className="text-center text-sm leading-snug text-white/80">{card.description}</p>}
       </div>
-    </div>
+    </>
+  );
+
+  if (!card.href) return <div className={className}>{inner}</div>;
+  return (
+    <a href={card.href} className={className} {...(external ? { target: "_blank", rel: "noreferrer noopener" } : {})}>
+      {inner}
+    </a>
   );
 }
