@@ -4,7 +4,7 @@
  *
  * The team-showcase layout (staggered tile grid + hover-linked name list),
  * reworked into Isaac Rozsa's music. Data + accent colours sourced from the
- * ROZSA repo (favicons in /public/music). Spotify/Tidal links are placeholders.
+ * ROZSA repo (favicons in /public/music).
  */
 import MusicShowcase, { type MusicItem } from "@/components/ui/team-showcase";
 
@@ -14,9 +14,8 @@ const ITEMS: MusicItem[] = [
   { id: "arrhythmia", name: "Arrhythmia", role: "Album", href: "https://isaacrozsa.com/arrhythmia", accent: "#2563eb", icon: "/music/arrhythmia.svg" },
   { id: "prologue", name: "Prologue", role: "Single", href: "https://isaacrozsa.com", accent: "#15a29d" },
   { id: "dude-like-dust", name: "Dude Like Dust", role: "Single", href: "https://isaacrozsa.com", accent: "#5c654c" },
-  { id: "spotify", name: "Spotify", role: "Listen", href: "#", accent: "#1db954", platform: "spotify", placeholder: true },
-  { id: "tidal", name: "Tidal", role: "Listen", href: "#", accent: "#0a0a0a", platform: "tidal", placeholder: true },
-  { id: "coming-soon", name: "Coming soon", role: "New sounds", href: "#", accent: "#0000ff", placeholder: true },
+  { id: "spotify", name: "Spotify", role: "Listen", href: "https://open.spotify.com/artist/1qxcbh1uWREvJm0Xl4rTn4", accent: "#1db954", platform: "spotify" },
+  { id: "tidal", name: "Tidal", role: "Listen", href: "https://tidal.com/artist/81760229", accent: "#0a0a0a", platform: "tidal" },
 ];
 
 export function MusicSection() {
