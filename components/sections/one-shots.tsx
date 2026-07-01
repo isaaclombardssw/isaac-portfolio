@@ -192,12 +192,20 @@ export function OneShotsSection() {
           )}
         </motion.div>
 
-        {/* Glassy frosted fade on the left and right edges of the billboard */}
+        {/* Glassy frosted fade on the left and right edges of the billboard.
+            The left panel has a soft oval cut-out where the controls sit, so
+            they read as a clear window punched out of the frosted glass. */}
         <div
           className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[22%] bg-gradient-to-r from-white/25 to-transparent backdrop-blur-md"
           style={{
-            maskImage: "linear-gradient(to right, black, transparent)",
-            WebkitMaskImage: "linear-gradient(to right, black, transparent)",
+            maskImage:
+              "linear-gradient(to right, black, transparent), radial-gradient(66px 132px at 76px 50%, transparent 52%, black 82%)",
+            WebkitMaskImage:
+              "linear-gradient(to right, black, transparent), radial-gradient(66px 132px at 76px 50%, transparent 52%, black 82%)",
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
           }}
         />
         <div
@@ -232,7 +240,7 @@ export function OneShotsSection() {
 
         {/* Left controls */}
         <div className="absolute left-8 top-1/2 z-20 -translate-y-1/2">
-          <div className="flex flex-col items-center gap-3 rounded-full border border-black/10 bg-white/70 p-3 shadow-lg backdrop-blur-md">
+          <div className="flex flex-col items-center gap-3 p-3">
             <button
               type="button"
               onClick={() => paginate(-1)}
