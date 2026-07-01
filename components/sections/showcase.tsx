@@ -44,7 +44,7 @@ const CARDS: MarqueeCard[] = [
   },
   {
     kind: "Service",
-    title: "Full-Stack Development",
+    title: "Full-Stack Solutions",
     description: "Development, testing and refactor of e2e software solutions.",
     icon: FaChartDiagram,
     href: "#contact",
