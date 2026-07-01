@@ -230,12 +230,12 @@ export function OneShotsSection() {
               href={demo.url}
               target="_blank"
               rel="noreferrer noopener"
-              aria-label={`Take a geez at ${demo.name}`}
+              aria-label={`Open ${demo.name}`}
               className="grid size-16 place-items-center rounded-full bg-brand text-brand-foreground shadow-lg shadow-brand/30 transition hover:brightness-110"
             >
               <span className="flex flex-col items-center leading-none">
                 <ExternalLink className="size-5" />
-                <span className="mt-1 text-[10px] font-semibold uppercase tracking-wide">geez</span>
+                <span className="mt-1 text-[10px] font-semibold uppercase tracking-wide">open</span>
               </span>
             </a>
 
