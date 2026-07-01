@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronUp, Eye } from "lucide-react";
-import { motion, useMotionTemplate, useScroll, useTransform } from "motion/react";
+import { AnimatePresence, motion, useMotionTemplate, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -16,14 +16,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
  * live 3D — so it doesn't bend as you scroll. Left controls cycle demos.
  */
 
-type Demo = { name: string; url: string; accent: string };
+type Demo = { name: string; url: string; accent: string; bg: string };
 
-// Placeholder demo sites — light site mocks (Isaac replaces with real screenshots).
+// Placeholder demo sites. `bg` is a solid dark fill (testing the roll motion —
+// swap back to real screenshots later).
 const DEMOS: Demo[] = [
-  { name: "Aperture Studio", url: "#", accent: "bg-rose-500" },
-  { name: "Northwind Coffee", url: "#", accent: "bg-amber-500" },
-  { name: "Halcyon Yoga", url: "#", accent: "bg-emerald-500" },
-  { name: "Monolith Type", url: "#", accent: "bg-indigo-600" },
+  { name: "Aperture Studio", url: "#", accent: "bg-rose-500", bg: "bg-rose-900" },
+  { name: "Northwind Coffee", url: "#", accent: "bg-amber-500", bg: "bg-amber-900" },
+  { name: "Halcyon Yoga", url: "#", accent: "bg-emerald-500", bg: "bg-emerald-900" },
+  { name: "Monolith Type", url: "#", accent: "bg-indigo-600", bg: "bg-indigo-900" },
 ];
 
 // Poster-panel corners as fractions of billboard-base.png — TL, TR, BR, BL.
@@ -39,6 +40,16 @@ const CORNERS: [number, number][] = [
 // matches the reflection image (536×885).
 const REF_W = 600;
 const REF_H = 990;
+
+// Poster roll — a mechanical scrolling billboard. "next" rolls the strip up
+// (new poster in from the bottom, old out the top); "prev" reverses it. The
+// spring gives the poster inertia so it pulls, then settles rather than snapping.
+const posterVariants = {
+  enter: (dir: number) => ({ y: dir >= 0 ? "100%" : "-100%" }),
+  center: { y: "0%" },
+  exit: (dir: number) => ({ y: dir >= 0 ? "-100%" : "100%" }),
+};
+const ROLL_TRANSITION = { type: "spring", stiffness: 190, damping: 26, mass: 1 } as const;
 
 // Homography mapping the REF_W×REF_H rectangle onto the four dst corners (px).
 function quadMatrix3d(dst: [number, number][]): string {
@@ -68,7 +79,7 @@ export function OneShotsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
-  const [index, setIndex] = useState(0);
+  const [[index, direction], setPage] = useState<[number, number]>([0, 0]);
   const demo = DEMOS[index];
 
   // Measure the billboard so the homography maps to real pixels (and on resize).
@@ -92,7 +103,7 @@ export function OneShotsSection() {
   const clipTop = useTransform(scrollYProgress, [0.02, 0.8], ["100%", "0%"]);
   const clipPath = useMotionTemplate`inset(${clipTop} 0% 0% 0%)`;
 
-  const cycle = (dir: 1 | -1) => setIndex((i) => (i + dir + DEMOS.length) % DEMOS.length);
+  const paginate = (dir: 1 | -1) => setPage(([i]) => [(i + dir + DEMOS.length) % DEMOS.length, dir]);
 
   return (
     <section ref={sectionRef} id="one-shots" className="relative h-[220vh] bg-background text-foreground">
@@ -115,16 +126,30 @@ export function OneShotsSection() {
           {/* Demo + reflection, perspective-mapped onto the poster panel */}
           {matrix && (
             <div
-              className="absolute left-0 top-0 overflow-hidden"
+              className="absolute left-0 top-0 overflow-hidden bg-neutral-950"
               style={{ width: REF_W, height: REF_H, transform: matrix, transformOrigin: "0 0" }}
             >
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-white px-10 text-center">
-                <div className={`size-12 rounded-2xl ${demo.accent}`} />
-                <span className="text-4xl font-bold tracking-tight text-neutral-800">{demo.name}</span>
-                <div className="h-2.5 w-2/3 rounded-full bg-neutral-200" />
-                <div className="h-2.5 w-1/2 rounded-full bg-neutral-200" />
-              </div>
-              {/* Reflection — record-style screen-blend texture (rozsa) */}
+              {/* The poster roll: the active demo scrolls into place. White
+                  backing hides any seam if the spring over-travels a hair. */}
+              <AnimatePresence custom={direction} initial={false}>
+                <motion.div
+                  key={index}
+                  custom={direction}
+                  variants={posterVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={ROLL_TRANSITION}
+                  className={`absolute inset-0 flex flex-col items-center justify-center gap-6 ${demo.bg} px-10 text-center`}
+                >
+                  <div className={`size-12 rounded-2xl ${demo.accent}`} />
+                  <span className="text-4xl font-bold tracking-tight text-white">{demo.name}</span>
+                  <div className="h-2.5 w-2/3 rounded-full bg-white/20" />
+                  <div className="h-2.5 w-1/2 rounded-full bg-white/20" />
+                </motion.div>
+              </AnimatePresence>
+              {/* Reflection — record-style screen-blend texture (rozsa), static
+                  over the glass while the poster rolls beneath it. */}
               <Image
                 src="/billboard/billboard-reflection.png"
                 alt=""
@@ -150,7 +175,7 @@ export function OneShotsSection() {
           <div className="flex flex-col items-center gap-3 rounded-full border border-black/10 bg-white/70 p-3 shadow-lg backdrop-blur-md">
             <button
               type="button"
-              onClick={() => cycle(-1)}
+              onClick={() => paginate(-1)}
               aria-label="Previous site"
               className="grid size-11 place-items-center rounded-full text-foreground/70 transition hover:bg-black/5 hover:text-foreground"
             >
@@ -172,14 +197,28 @@ export function OneShotsSection() {
 
             <button
               type="button"
-              onClick={() => cycle(1)}
+              onClick={() => paginate(1)}
               aria-label="Next site"
               className="grid size-11 place-items-center rounded-full text-foreground/70 transition hover:bg-black/5 hover:text-foreground"
             >
               <ChevronDown className="size-5" />
             </button>
           </div>
-          <p className="mt-3 text-center text-xs text-foreground/50">{demo.name}</p>
+          <div className="mt-3 h-4 overflow-hidden text-center">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.p
+                key={demo.name}
+                custom={direction}
+                initial={(d: number) => ({ opacity: 0, y: d >= 0 ? 8 : -8 })}
+                animate={{ opacity: 1, y: 0 }}
+                exit={(d: number) => ({ opacity: 0, y: d >= 0 ? -8 : 8 })}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="text-xs text-foreground/50"
+              >
+                {demo.name}
+              </motion.p>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>
