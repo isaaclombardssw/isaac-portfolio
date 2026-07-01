@@ -30,9 +30,9 @@ const DEMOS: Demo[] = [
 // The panel is a trapezoid (recedes to the right). TODO(tune) in-browser.
 const CORNERS: [number, number][] = [
   [0.450, 0.318], // top-left
-  [0.671, 0.334], // top-right
-  [0.674, 0.862], // bottom-right
-  [0.450, 0.892], // bottom-left
+  [0.671, 0.326], // top-right
+  [0.668, 0.872], // bottom-right
+  [0.454, 0.902], // bottom-left
 ];
 
 // Reference (frontal) size the demo/reflection fill before being warped. Aspect
