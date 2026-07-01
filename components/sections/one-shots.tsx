@@ -64,7 +64,13 @@ function PosterFace({ demo, large }: { demo: Demo; large?: boolean }) {
 // (deviation from white, so the screenshot keeps its true colours) and a light
 // screen adds just the bright sheen that reads as glass.
 function PosterReflection() {
-  const style = { transform: "translateY(1.5%) scale(1.08)", transformOrigin: "left center" } as const;
+  // Higher contrast makes the reflection read more (punchier highlights + darks)
+  // so the glass sheen can stay very subtle.
+  const style = {
+    transform: "translateY(1.5%) scale(1.08)",
+    transformOrigin: "left center",
+    filter: "contrast(1.7)",
+  } as const;
   return (
     <>
       <Image
@@ -83,7 +89,7 @@ function PosterReflection() {
         fill
         sizes="40vw"
         style={style}
-        className="pointer-events-none object-cover opacity-25 mix-blend-screen"
+        className="pointer-events-none object-cover opacity-10 mix-blend-screen"
       />
     </>
   );
