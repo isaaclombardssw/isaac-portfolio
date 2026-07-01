@@ -11,7 +11,7 @@ import { FaChartDiagram, FaHighlighter, FaJs, FaPeopleLine, FaShapes } from "rea
 import { type MarqueeCard, MarqueeCards } from "@/components/ui/marquee-cards";
 
 const CARDS: MarqueeCard[] = [
-  { kind: "Worked on", title: "TinaCMS — UI, UX & development", image: "/work/tinacms.jpg" },
+  { kind: "Worked on", title: "TinaCMS", description: "UI, UX & development", image: "/work/tinacms.jpg" },
   {
     kind: "Service",
     title: "Design Systems",
@@ -19,7 +19,7 @@ const CARDS: MarqueeCard[] = [
     icon: FaShapes,
   },
   { kind: "Service", title: "UI and UX Testing", description: "Audit existing system UIs and UX flows.", icon: FaHighlighter },
-  { kind: "Worked on", title: "Enterprise software solutions — SSW", image: "/work/ssw.jpg" },
+  { kind: "Worked on", title: "SSW", description: "Enterprise software solutions", image: "/work/ssw.jpg" },
   { kind: "Service", title: "Frontend Development", description: "Pixel-perfect frontend implementation.", icon: FaJs },
   {
     kind: "Service",
