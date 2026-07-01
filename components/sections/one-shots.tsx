@@ -44,12 +44,17 @@ const REF_H = 990;
 // Poster roll — a mechanical scrolling billboard. "next" rolls the strip up
 // (new poster in from the bottom, old out the top); "prev" reverses it. The
 // spring gives the poster inertia so it pulls, then settles rather than snapping.
+// Travel past 100% so the dark backing shows between the outgoing and incoming
+// posters — the black-ish seam of a mechanical scrolling billboard.
+const GAP = "115%";
+const NGAP = "-115%";
 const posterVariants = {
-  enter: (dir: number) => ({ y: dir >= 0 ? "100%" : "-100%" }),
+  enter: (dir: number) => ({ y: dir >= 0 ? GAP : NGAP }),
   center: { y: "0%" },
-  exit: (dir: number) => ({ y: dir >= 0 ? "-100%" : "100%" }),
+  exit: (dir: number) => ({ y: dir >= 0 ? NGAP : GAP }),
 };
-const ROLL_TRANSITION = { type: "spring", stiffness: 190, damping: 26, mass: 1 } as const;
+// Slow, mechanical roll so the seam is visible as it travels through the window.
+const ROLL_TRANSITION = { type: "tween", duration: 1.1, ease: [0.65, 0, 0.35, 1] } as const;
 
 // Homography mapping the REF_W×REF_H rectangle onto the four dst corners (px).
 function quadMatrix3d(dst: [number, number][]): string {
@@ -126,7 +131,7 @@ export function OneShotsSection() {
           {/* Demo + reflection, perspective-mapped onto the poster panel */}
           {matrix && (
             <div
-              className="absolute left-0 top-0 overflow-hidden bg-neutral-950"
+              className="absolute left-0 top-0 overflow-hidden bg-black"
               style={{ width: REF_W, height: REF_H, transform: matrix, transformOrigin: "0 0" }}
             >
               {/* The poster roll: the active demo scrolls into place. White
@@ -159,6 +164,24 @@ export function OneShotsSection() {
                 style={{ transform: "translateY(1.5%) scale(1.08)", transformOrigin: "left center" }}
                 className="pointer-events-none object-cover opacity-80 mix-blend-screen"
               />
+
+              {/* Seam: the black-ish gap between poster sheets, riding above the
+                  glass (so screen-blend can't wash it out) and tracking the top
+                  edge of the incoming poster. */}
+              <AnimatePresence custom={direction} initial={false}>
+                <motion.div
+                  key={`seam-${index}`}
+                  custom={direction}
+                  variants={posterVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={ROLL_TRANSITION}
+                  className="pointer-events-none absolute inset-0"
+                >
+                  <div className="absolute inset-x-0 bottom-full h-[15%] bg-neutral-900" />
+                </motion.div>
+              </AnimatePresence>
             </div>
           )}
         </motion.div>
