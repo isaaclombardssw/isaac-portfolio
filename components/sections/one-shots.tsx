@@ -116,13 +116,36 @@ export function OneShotsSection() {
           lands with the billboard already revealing rather than at the empty start. */}
       <span id="one-shots" aria-hidden className="pointer-events-none absolute inset-x-0 top-0 md:top-[80vh]" />
       {/* Desktop: pinned billboard with rolling-window reveal + matrix3d poster */}
-      <div className="hidden h-screen items-center justify-center overflow-hidden md:sticky md:top-0 md:flex">
-        {/* Pinned billboard, revealed bottom-up */}
-        <motion.div
-          ref={sceneRef}
-          style={{ clipPath, WebkitClipPath: clipPath }}
-          className="relative aspect-[2447/1531] w-full max-w-[1700px]"
-        >
+      <div className="hidden h-screen items-center justify-center overflow-hidden px-8 py-10 md:sticky md:top-0 md:flex md:flex-col">
+        <div className="flex w-fit max-w-full flex-col gap-4">
+          {/* Title — sits just above the billboard */}
+          <h2 className="flex items-center gap-2 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+            One-Shot Websites
+            <span className="group relative inline-flex">
+              <button
+                type="button"
+                aria-label="What's a one-shot website?"
+                className="text-foreground/40 transition hover:text-foreground/70 focus-visible:text-foreground/70 focus-visible:outline-none"
+              >
+                <CircleQuestionMark className="size-5" />
+              </button>
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 w-60 -translate-x-1/2 rounded-lg bg-neutral-900 px-3 py-2 text-center text-xs font-normal leading-snug text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100"
+              >
+                Websites built with AI in only 1 or very few prompts
+              </span>
+            </span>
+          </h2>
+
+          {/* Billboard stage — frosted edges + controls sit relative to this */}
+          <div className="relative">
+            {/* Pinned billboard, revealed bottom-up */}
+            <motion.div
+              ref={sceneRef}
+              style={{ clipPath, WebkitClipPath: clipPath, height: "74vh", width: "calc(74vh * 1.5983)" }}
+              className="relative"
+            >
           <Image
             src="/billboard/billboard-base.png"
             alt="Bus-stop billboard advertising one-shot websites"
@@ -212,28 +235,6 @@ export function OneShotsSection() {
           }}
         />
 
-        {/* Section label */}
-        <div className="pointer-events-none absolute left-8 top-10 z-20 max-w-sm">
-          <h2 className="flex items-center gap-2 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
-            One-Shot Websites
-            <span className="group pointer-events-auto relative inline-flex">
-              <button
-                type="button"
-                aria-label="What's a one-shot website?"
-                className="text-foreground/40 transition hover:text-foreground/70 focus-visible:text-foreground/70 focus-visible:outline-none"
-              >
-                <CircleQuestionMark className="size-5" />
-              </button>
-              <span
-                role="tooltip"
-                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 w-60 -translate-x-1/2 rounded-lg bg-neutral-900 px-3 py-2 text-center text-xs font-normal leading-snug text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100"
-              >
-                Websites built with AI in only 1 or very few prompts
-              </span>
-            </span>
-          </h2>
-        </div>
-
         {/* Left controls */}
         <div className="absolute left-8 top-1/2 z-20 -translate-y-1/2">
           <div className="flex flex-col items-center gap-3 rounded-full border border-black/10 bg-white/70 p-3 shadow-lg backdrop-blur-md">
@@ -267,6 +268,8 @@ export function OneShotsSection() {
             >
               <ChevronDown className="size-5" />
             </button>
+          </div>
+        </div>
           </div>
         </div>
       </div>
