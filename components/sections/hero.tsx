@@ -1,116 +1,146 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { motion } from "motion/react";
-import { type NavSection, NAV_SECTIONS } from "@/lib/sections";
+import { useCallback, useEffect, useRef, useState } from "react";
 import TextCursorProximity from "@/components/ui/text-cursor-proximity";
+import { NAV_SECTIONS } from "@/lib/sections";
 
 /**
  * SECTION 1 — HERO
  * Component: https://21st.dev/@danielpetho/components/text-cursor-proximity
  *
- * White site background; a brand-violet card centred on screen (the white margin
- * around it is the "generous white padding"). The headline reacts to cursor
- * proximity. Nav icons sit at the bottom of the card; on hover a white pill
- * slides up from the surround and settles just above the icon, then the brand-
- * violet label fades in.
+ * Layout mirrors the component's own demo: square-cornered card, big cursor-
+ * reactive headline top-left (left-aligned), role top-right (where the demo's
+ * date sits), nav marks along the bottom.
+ *
+ * Nav interaction: each icon's label is always rendered in brand violet — the
+ * same colour as the card, so it's invisible — and a single WHITE pill slides
+ * horizontally to sit behind the hovered icon's label, REVEALING it (violet on
+ * white). The pill rests on the last-hovered icon rather than resetting.
  */
+
+type PillRect = { left: number; top: number; width: number; height: number };
+
 export function HeroSection() {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const labelRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [active, setActive] = useState<number | null>(null);
+  const [pill, setPill] = useState<PillRect | null>(null);
+
+  const measure = useCallback((index: number): PillRect | null => {
+    const el = labelRefs.current[index];
+    const nav = navRef.current;
+    if (!el || !nav) return null;
+    const navRect = nav.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    const padX = 16;
+    const padY = 7;
+    return {
+      left: r.left - navRect.left - padX,
+      top: r.top - navRect.top - padY,
+      width: r.width + padX * 2,
+      height: r.height + padY * 2,
+    };
+  }, []);
+
+  // Park the pill at the left edge so the first reveal slides in from the side.
+  useEffect(() => {
+    const el = labelRefs.current[0];
+    const nav = navRef.current;
+    if (!el || !nav) return;
+    const r = el.getBoundingClientRect();
+    const navRect = nav.getBoundingClientRect();
+    setPill({ left: 0, top: r.top - navRect.top - 7, width: 0, height: r.height + 14 });
+  }, []);
+
+  const onEnter = (index: number) => {
+    const next = measure(index);
+    if (next) setPill(next);
+    setActive(index);
+  };
+
+  useEffect(() => {
+    if (active === null) return;
+    const onResize = () => {
+      const next = measure(active);
+      if (next) setPill(next);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [active, measure]);
 
   return (
-    <section
-      id="hero"
-      className="flex min-h-screen items-center justify-center bg-background p-6 md:p-12"
-    >
+    <section id="hero" className="flex min-h-screen items-center justify-center bg-background p-6 md:p-10">
       <div
         ref={cardRef}
-        className="relative flex aspect-[16/10] w-full max-w-5xl flex-col justify-between rounded-[2rem] bg-brand p-8 text-brand-foreground md:p-14"
+        className="relative flex aspect-[16/10] w-full max-w-6xl flex-col justify-between overflow-hidden bg-brand p-8 text-brand-foreground md:p-14"
       >
-        {/* Top-right role */}
-        <p className="max-w-[16ch] self-end text-right text-sm font-medium tracking-wide text-brand-foreground/85 md:text-base">
-          Technical and creative consultant
-        </p>
-
-        {/* Cursor-proximity headline */}
-        <h1 className="pointer-events-none select-none text-center font-heading text-[13vw] font-semibold leading-[0.95] tracking-tight md:text-[6.5rem] lg:text-[7.5rem]">
-          <TextCursorProximity
-            label="Isaac W. R. Lombard"
-            containerRef={cardRef}
-            radius={130}
-            falloff="gaussian"
-            className="text-brand-foreground"
-            styles={{
-              fontWeight: { from: 400, to: 800 },
-              letterSpacing: { from: "0em", to: "0.045em" },
-              scale: { from: 1, to: 1.14 },
-            }}
-          />
-        </h1>
-
-        {/* Nav icons with sliding hover pill */}
-        <nav
-          className="flex items-end justify-center gap-8 md:gap-12"
-          onMouseLeave={() => setActive(null)}
-        >
-          {NAV_SECTIONS.map((section) => (
-            <NavPill
-              key={section.id}
-              section={section}
-              active={active === section.id}
-              onEnter={() => setActive(section.id)}
+        {/* Top: big left-aligned headline + top-right role */}
+        <div className="flex items-start justify-between gap-6">
+          <h1 className="pointer-events-none max-w-[9ch] select-none font-heading text-6xl font-semibold uppercase leading-[0.9] tracking-tight md:text-8xl">
+            <TextCursorProximity
+              label="Isaac W. R. Lombard"
+              containerRef={cardRef}
+              radius={140}
+              falloff="gaussian"
+              className="text-brand-foreground"
+              styles={{
+                fontWeight: { from: 400, to: 800 },
+                letterSpacing: { from: "0em", to: "0.04em" },
+                scale: { from: 1, to: 1.12 },
+              }}
             />
-          ))}
+          </h1>
+          <p className="max-w-[14ch] shrink-0 text-right text-sm font-medium tracking-wide text-brand-foreground/85 md:text-base">
+            Technical and creative consultant
+          </p>
+        </div>
+
+        {/* Bottom: nav icons with sliding-pill reveal */}
+        <nav ref={navRef} className="relative flex items-end justify-center gap-10 md:gap-16">
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute rounded-full bg-background"
+            initial={false}
+            animate={
+              pill
+                ? {
+                    left: pill.left,
+                    top: pill.top,
+                    width: pill.width,
+                    height: pill.height,
+                    opacity: active === null ? 0 : 1,
+                  }
+                : { opacity: 0 }
+            }
+            transition={{ type: "spring", stiffness: 380, damping: 34, mass: 0.7 }}
+          />
+          {NAV_SECTIONS.map((section, i) => {
+            const Icon = section.icon;
+            return (
+              <a
+                key={section.id}
+                href={`#${section.id}`}
+                aria-label={section.label}
+                onMouseEnter={() => onEnter(i)}
+                onFocus={() => onEnter(i)}
+                className="relative flex flex-col items-center gap-3 focus-visible:outline-none"
+              >
+                <span
+                  ref={(el) => {
+                    labelRefs.current[i] = el;
+                  }}
+                  className="relative z-10 whitespace-nowrap text-sm font-medium text-brand"
+                >
+                  {section.label}
+                </span>
+                <Icon className="size-6 text-brand-foreground/85 md:size-7" />
+              </a>
+            );
+          })}
         </nav>
       </div>
     </section>
-  );
-}
-
-function NavPill({
-  section,
-  active,
-  onEnter,
-}: {
-  section: NavSection;
-  active: boolean;
-  onEnter: () => void;
-}) {
-  const { id, label, icon: Icon } = section;
-
-  return (
-    <div
-      className="relative flex flex-col items-center"
-      onMouseEnter={onEnter}
-    >
-      {/* White pill — slides up from outside the card, settles above the icon */}
-      <motion.div
-        className="pointer-events-none absolute bottom-full left-1/2 mb-4"
-        style={{ x: "-50%" }}
-        initial={false}
-        animate={active ? { y: 0, opacity: 1 } : { y: 130, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 420, damping: 32, mass: 0.8 }}
-      >
-        <div className="rounded-full bg-background px-4 py-1.5 shadow-lg shadow-brand-deep/40 ring-1 ring-brand-deep/5">
-          <motion.span
-            className="block whitespace-nowrap text-sm font-medium text-brand"
-            initial={false}
-            animate={{ opacity: active ? 1 : 0 }}
-            transition={{ duration: 0.18, delay: active ? 0.26 : 0 }}
-          >
-            {label}
-          </motion.span>
-        </div>
-      </motion.div>
-
-      <a
-        href={`#${id}`}
-        aria-label={label}
-        className="rounded-full p-1 text-brand-foreground/80 transition-colors duration-200 hover:text-brand-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-foreground/60"
-      >
-        <Icon className="size-6 md:size-7" />
-      </a>
-    </div>
   );
 }
