@@ -283,7 +283,7 @@ export function OneShotsSection() {
               </button>
               <span
                 role="tooltip"
-                className="pointer-events-none absolute left-0 top-full z-30 mt-2 w-56 rounded-lg bg-neutral-900 px-3 py-2 text-xs font-normal leading-snug text-white opacity-0 shadow-lg transition-opacity duration-200 group-focus-within:opacity-100"
+                className="pointer-events-none absolute right-0 top-full z-30 mt-2 w-56 rounded-lg bg-neutral-900 px-3 py-2 text-xs font-normal leading-snug text-white opacity-0 shadow-lg transition-opacity duration-200 group-focus-within:opacity-100"
               >
                 Websites built with AI in only 1 or very few prompts
               </span>
