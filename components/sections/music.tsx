@@ -22,7 +22,7 @@ export function MusicSection() {
   return (
     <section
       id="music"
-      className="flex min-h-screen flex-col items-center justify-center gap-12 bg-background px-6 py-24 text-foreground"
+      className="flex flex-col items-center justify-center gap-12 bg-background px-6 py-24 text-foreground md:min-h-screen"
     >
       <h2 className="font-heading text-4xl font-semibold tracking-tight md:text-6xl">Music Production</h2>
 

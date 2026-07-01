@@ -55,10 +55,11 @@ export function ShowcaseSection() {
   return (
     <section
       id="work"
-      className="flex min-h-screen flex-col items-center justify-center gap-12 overflow-hidden bg-background py-24 text-foreground"
+      className="flex flex-col items-center justify-center gap-12 overflow-hidden bg-background py-24 text-foreground md:min-h-screen"
     >
       <h2 className="font-heading text-4xl font-semibold tracking-tight md:text-6xl">
-        Development, UX and MGMT
+        <span className="md:hidden">Skillset</span>
+        <span className="hidden md:inline">Development, UX and MGMT</span>
       </h2>
 
       <MarqueeCards cards={CARDS} />

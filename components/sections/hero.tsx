@@ -79,18 +79,23 @@ export function HeroSection() {
         {/* Top: big left-aligned headline + role (top-right on desktop, stacked on mobile) */}
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
           <h1 className="pointer-events-none max-w-[9ch] select-none font-heading text-6xl font-semibold uppercase leading-[0.9] tracking-tight md:text-8xl">
-            <TextCursorProximity
-              label="Isaac W. R. Lombard"
-              containerRef={cardRef}
-              radius={140}
-              falloff="gaussian"
-              className="text-brand-foreground"
-              styles={{
-                fontWeight: { from: 400, to: 800 },
-                letterSpacing: { from: "0em", to: "0.04em" },
-                scale: { from: 1, to: 1.12 },
-              }}
-            />
+            {/* Mobile: short name, no cursor effect. */}
+            <span className="md:hidden">Isaac Lombard</span>
+            {/* Desktop: full name with cursor-proximity. */}
+            <span className="hidden md:block">
+              <TextCursorProximity
+                label="Isaac W. R. Lombard"
+                containerRef={cardRef}
+                radius={140}
+                falloff="gaussian"
+                className="text-brand-foreground"
+                styles={{
+                  fontWeight: { from: 400, to: 800 },
+                  letterSpacing: { from: "0em", to: "0.04em" },
+                  scale: { from: 1, to: 1.12 },
+                }}
+              />
+            </span>
           </h1>
           <p className="text-sm font-medium tracking-wide text-brand-foreground/85 md:max-w-[14ch] md:shrink-0 md:text-right md:text-base">
             UX, AI and software project consulting
@@ -98,7 +103,7 @@ export function HeroSection() {
         </div>
 
         {/* Bottom: nav icons with sliding-pill reveal */}
-        <nav ref={navRef} className="relative flex flex-wrap items-end justify-center gap-x-6 gap-y-5 md:flex-nowrap md:gap-16">
+        <nav ref={navRef} className="relative hidden items-end justify-center gap-16 md:flex">
           <motion.div
             aria-hidden
             className="pointer-events-none absolute rounded-full bg-background"
@@ -125,13 +130,13 @@ export function HeroSection() {
                 aria-label={section.label}
                 onMouseEnter={() => onEnter(i)}
                 onFocus={() => onEnter(i)}
-                className="relative flex flex-col-reverse items-center gap-2 focus-visible:outline-none md:flex-col md:gap-3"
+                className="relative flex flex-col items-center gap-3 focus-visible:outline-none"
               >
                 <span
                   ref={(el) => {
                     labelRefs.current[i] = el;
                   }}
-                  className="relative z-10 whitespace-nowrap text-xs font-medium text-brand-foreground/85 md:text-sm md:text-brand"
+                  className="relative z-10 whitespace-nowrap text-sm font-medium text-brand"
                 >
                   {section.label}
                 </span>

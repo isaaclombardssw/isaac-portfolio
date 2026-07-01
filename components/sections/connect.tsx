@@ -52,7 +52,10 @@ export function ConnectSection() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   return (
-    <section ref={ref} id="connect" className="relative h-[180vh] bg-background text-foreground">
+    <section ref={ref} className="relative h-[180vh] bg-background text-foreground">
+      {/* Nav target at the very bottom so the "Connect" link lands on the fully
+          risen finale rather than the empty top of the pinned section. */}
+      <span id="connect" aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0" />
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden p-8">
         <CosmicSpectrum color="blue" blur progress={scrollYProgress} />
 

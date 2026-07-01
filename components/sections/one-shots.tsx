@@ -111,7 +111,10 @@ export function OneShotsSection() {
   const paginate = (dir: 1 | -1) => setPage(([i]) => [(i + dir + DEMOS.length) % DEMOS.length, dir]);
 
   return (
-    <section ref={sectionRef} id="one-shots" className="relative bg-background text-foreground md:h-[220vh]">
+    <section ref={sectionRef} className="relative bg-background text-foreground md:h-[220vh]">
+      {/* Nav target: top on mobile, but deep into the pin on desktop so the link
+          lands with the billboard already revealing rather than at the empty start. */}
+      <span id="one-shots" aria-hidden className="pointer-events-none absolute inset-x-0 top-0 md:top-[80vh]" />
       {/* Desktop: pinned billboard with rolling-window reveal + matrix3d poster */}
       <div className="hidden h-screen items-center justify-center overflow-hidden md:sticky md:top-0 md:flex">
         {/* Pinned billboard, revealed bottom-up */}
@@ -269,7 +272,7 @@ export function OneShotsSection() {
       </div>
 
       {/* Mobile: feature the poster itself, portrait — keeps the roll + seam + reflection */}
-      <div className="flex flex-col items-center gap-10 px-6 py-20 md:hidden">
+      <div className="flex flex-col items-center gap-10 px-6 py-28 md:hidden">
         <div className="w-full max-w-[340px]">
           <h2 className="flex items-center gap-2 font-heading text-3xl font-semibold tracking-tight text-foreground">
             One-Shot Websites
