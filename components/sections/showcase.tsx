@@ -27,7 +27,7 @@ const CARDS: MarqueeCard[] = [
     icon: FaHighlighter,
     href: "#contact",
   },
-  { kind: "Worked on", title: "SSW", description: "Enterprise software solutions", image: "/work/ssw.jpg", href: "https://www.ssw.com.au" },
+  { kind: "Worked with", title: "SSW", description: "Enterprise software solutions", image: "/work/ssw.jpg", href: "https://www.ssw.com.au" },
   {
     kind: "Service",
     title: "Frontend Development",
