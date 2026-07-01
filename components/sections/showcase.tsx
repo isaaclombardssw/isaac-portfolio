@@ -7,8 +7,7 @@
  * The real PrebuiltUI marquee-cards-with-hover-effect (see components/ui/
  * marquee-cards.tsx), fed Isaac's services + placeholder projects.
  */
-import { AppWindow, Component, Layers, ScanEye } from "lucide-react";
-import { FaPeopleLine } from "react-icons/fa6";
+import { FaChartDiagram, FaHighlighter, FaJs, FaPeopleLine, FaShapes } from "react-icons/fa6";
 import { type MarqueeCard, MarqueeCards } from "@/components/ui/marquee-cards";
 
 const CARDS: MarqueeCard[] = [
@@ -17,11 +16,11 @@ const CARDS: MarqueeCard[] = [
     kind: "Service",
     title: "Design Systems",
     description: "Reign in AI designs with a bespoke, minimal design system.",
-    icon: Component,
+    icon: FaShapes,
   },
-  { kind: "Service", title: "UI and UX Testing", description: "Audit existing system UIs and UX flows.", icon: ScanEye },
+  { kind: "Service", title: "UI and UX Testing", description: "Audit existing system UIs and UX flows.", icon: FaHighlighter },
   { kind: "Worked on", title: "Enterprise software solutions — SSW", image: "/work/ssw.jpg" },
-  { kind: "Service", title: "Frontend Development", description: "Pixel-perfect frontend implementation.", icon: AppWindow },
+  { kind: "Service", title: "Frontend Development", description: "Pixel-perfect frontend implementation.", icon: FaJs },
   {
     kind: "Service",
     title: "Scrum Master",
@@ -32,7 +31,7 @@ const CARDS: MarqueeCard[] = [
     kind: "Service",
     title: "Full-Stack Development",
     description: "Development, testing and refactor of e2e software solutions.",
-    icon: Layers,
+    icon: FaChartDiagram,
   },
 ];
 
