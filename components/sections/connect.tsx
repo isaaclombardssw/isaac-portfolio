@@ -31,10 +31,20 @@ function Linkedin(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+// Blog mark — a solid RSS glyph, weighted to match the brand marks above.
+function Blog(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false" {...props}>
+      <path d="M2 3.5a.5.5 0 0 1 .5-.5c5.523 0 10 4.477 10 10a.5.5 0 0 1-1 0 9 9 0 0 0-9-9 .5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5 6 6 0 0 1 6 6 .5.5 0 0 1-1 0 5 5 0 0 0-5-5 .5.5 0 0 1-.5-.5m0 5.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0" />
+    </svg>
+  );
+}
+
 const SOCIALS = [
   { label: "GitHub", href: "https://github.com/isaaclombardssw", Icon: Github },
   // TODO(isaac): replace with your real LinkedIn profile URL.
   { label: "LinkedIn", href: "https://www.linkedin.com/in/", Icon: Linkedin },
+  { label: "Blog", href: "https://iwrl.net", Icon: Blog },
 ] as const;
 
 export function ConnectSection() {
