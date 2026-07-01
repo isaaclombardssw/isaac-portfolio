@@ -47,7 +47,7 @@ export function ConnectSection() {
         <CosmicSpectrum color="violet" blur progress={scrollYProgress} />
 
         <div className="relative z-10 flex flex-col items-center gap-10 text-center">
-          <h2 className="font-heading text-4xl font-semibold tracking-tight text-brand-foreground md:text-6xl">
+          <h2 className="font-heading text-4xl font-semibold tracking-tight text-background md:text-6xl">
             Let&apos;s connect
           </h2>
 
@@ -59,15 +59,15 @@ export function ConnectSection() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={label}
-                  className="group relative grid size-16 place-items-center rounded-full text-brand-foreground transition-transform duration-300 ease-out hover:scale-110 focus-visible:scale-110 focus-visible:outline-none md:size-20"
+                  className="group relative grid size-16 place-items-center rounded-full text-background transition-transform duration-300 ease-out hover:scale-110 focus-visible:scale-110 focus-visible:outline-none md:size-20"
                 >
                   {/* White glow halo, revealed on hover/focus. */}
                   <span
                     aria-hidden
                     className="absolute inset-0 rounded-full opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
-                    style={{ background: "color-mix(in oklab, var(--brand-foreground) 55%, transparent)" }}
+                    style={{ background: "color-mix(in oklab, var(--background) 55%, transparent)" }}
                   />
-                  <Icon className="relative size-8 text-brand-foreground transition-[filter] duration-300 md:size-9 group-hover:[filter:drop-shadow(0_0_12px_rgba(255,255,255,0.95))] group-focus-visible:[filter:drop-shadow(0_0_12px_rgba(255,255,255,0.95))]" />
+                  <Icon className="relative size-8 text-background transition-[filter] duration-300 md:size-9 group-hover:[filter:drop-shadow(0_0_12px_rgba(255,255,255,0.95))] group-focus-visible:[filter:drop-shadow(0_0_12px_rgba(255,255,255,0.95))]" />
                 </a>
               </li>
             ))}

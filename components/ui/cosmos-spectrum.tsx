@@ -42,12 +42,12 @@ export function CosmicSpectrum({
   const own = useScroll({ target: ref, offset: ["start end", "start start"] });
   const p = progress ?? own.scrollYProgress;
 
-  // Sit as a sliver, then rise smoothly and pop up with momentum near the end.
-  const scaleY = useTransform(p, [0, 0.4, 0.75, 1], [0.16, 0.34, 0.86, 1]);
+  // Sit as a sliver with resistance, then shoot up with momentum near the end.
+  const scaleY = useTransform(p, [0, 0.5, 0.82, 1], [0.15, 0.22, 0.92, 1]);
   const colors = THEMES[color];
 
   return (
-    <div ref={ref} className="pointer-events-none absolute inset-x-0 bottom-0 h-[74%]">
+    <div ref={ref} className="pointer-events-none absolute inset-x-0 bottom-0 h-[90%]">
       <motion.svg
         style={{ scaleY, transformOrigin: "bottom" }}
         className="h-full w-full"
