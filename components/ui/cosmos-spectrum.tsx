@@ -43,8 +43,9 @@ export function CosmicSpectrum({
   const own = useScroll({ target: ref, offset: ["start end", "start start"] });
   const p = progress ?? own.scrollYProgress;
 
-  // Sit as a sliver with resistance, then shoot up with momentum near the end.
-  const scaleY = useTransform(p, [0, 0.5, 0.82, 1], [0.15, 0.22, 0.92, 1]);
+  // Sit as a sliver with resistance, then shoot up with momentum near the end —
+  // landing late so it resolves as you actually reach the section.
+  const scaleY = useTransform(p, [0, 0.62, 0.95, 1], [0.15, 0.22, 0.95, 1]);
   const colors = THEMES[color];
 
   return (

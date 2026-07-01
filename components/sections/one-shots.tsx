@@ -105,7 +105,7 @@ export function OneShotsSection() {
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
   // Rolling window: reveal the pinned image from the bottom up.
-  const clipTop = useTransform(scrollYProgress, [0.02, 0.8], ["100%", "0%"]);
+  const clipTop = useTransform(scrollYProgress, [0.05, 0.95], ["100%", "0%"]);
   const clipPath = useMotionTemplate`inset(${clipTop} 0% 0% 0%)`;
 
   const paginate = (dir: 1 | -1) => setPage(([i]) => [(i + dir + DEMOS.length) % DEMOS.length, dir]);
