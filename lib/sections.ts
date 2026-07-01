@@ -1,18 +1,18 @@
+import type { IconType } from "react-icons";
 import {
-  AudioLines,
-  LayoutGrid,
-  type LucideIcon,
-  Megaphone,
-  MessageSquareText,
-  Radio,
-} from "lucide-react";
+  FaPersonBurst,
+  FaPersonChalkboard,
+  FaPersonCircleQuestion,
+  FaPersonHarassing,
+  FaPersonWalkingLuggage,
+} from "react-icons/fa6";
 
 export type NavSection = {
   /** Anchor id on the target <section>. */
   id: string;
   /** Label shown in the hero hover-pill. */
   label: string;
-  icon: LucideIcon;
+  icon: IconType;
 };
 
 /**
@@ -20,9 +20,9 @@ export type NavSection = {
  * Order matches the page scroll order.
  */
 export const NAV_SECTIONS: NavSection[] = [
-  { id: "contact", label: "Let's talk", icon: MessageSquareText },
-  { id: "work", label: "Work", icon: LayoutGrid },
-  { id: "one-shots", label: "One-shots", icon: Megaphone },
-  { id: "music", label: "Music", icon: AudioLines },
-  { id: "connect", label: "Connect", icon: Radio },
+  { id: "contact", label: "Let's talk", icon: FaPersonCircleQuestion },
+  { id: "work", label: "Work", icon: FaPersonChalkboard },
+  { id: "one-shots", label: "One-shots", icon: FaPersonBurst },
+  { id: "music", label: "Music", icon: FaPersonHarassing },
+  { id: "connect", label: "Connect", icon: FaPersonWalkingLuggage },
 ];

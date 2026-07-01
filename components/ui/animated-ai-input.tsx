@@ -1,17 +1,12 @@
 "use client";
 
+import { ArrowRight, Check, ChevronDown, Loader2, Paperclip } from "lucide-react";
 import {
-    ArrowRight,
-    Check,
-    ChevronDown,
-    ClipboardList,
-    Lightbulb,
-    Loader2,
-    Megaphone,
-    Palette,
-    Paperclip,
-    Terminal,
-} from "lucide-react";
+    FaPersonArrowUpFromLine,
+    FaPersonChalkboard,
+    FaPersonHarassing,
+    FaPersonMilitaryToPerson,
+} from "react-icons/fa6";
 import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -70,19 +65,17 @@ function useAutoResizeTextarea({ minHeight, maxHeight }: UseAutoResizeTextareaPr
 
 // Persona "models" — people/action icons instead of provider logos.
 const MODELS = [
-    "marketing-isaac-mini",
+    "marketing-seo-geo-mini",
     "design-consultant-4-pro",
     "full-stack-isaac-o",
-    "brand-strategy-3.5",
     "scrum-master-turbo",
 ];
 
 const MODEL_ICONS: Record<string, React.ReactNode> = {
-    "marketing-isaac-mini": <Megaphone className="h-4 w-4" />,
-    "design-consultant-4-pro": <Palette className="h-4 w-4" />,
-    "full-stack-isaac-o": <Terminal className="h-4 w-4" />,
-    "brand-strategy-3.5": <Lightbulb className="h-4 w-4" />,
-    "scrum-master-turbo": <ClipboardList className="h-4 w-4" />,
+    "marketing-seo-geo-mini": <FaPersonArrowUpFromLine className="h-4 w-4" />,
+    "design-consultant-4-pro": <FaPersonChalkboard className="h-4 w-4" />,
+    "full-stack-isaac-o": <FaPersonMilitaryToPerson className="h-4 w-4" />,
+    "scrum-master-turbo": <FaPersonHarassing className="h-4 w-4" />,
 };
 
 export function LeadCaptureChat() {
@@ -179,7 +172,21 @@ export function LeadCaptureChat() {
                                                     className="flex items-center gap-1"
                                                 >
                                                     {MODEL_ICONS[selectedModel]}
-                                                    {selectedModel}
+                                                    {/* Reserve the widest label's width (left-aligned) so the trigger never shifts. */}
+                                                    <span className="grid justify-items-start">
+                                                        {MODELS.map((m) => (
+                                                            <span
+                                                                key={m}
+                                                                aria-hidden
+                                                                className="invisible col-start-1 row-start-1 whitespace-nowrap"
+                                                            >
+                                                                {m}
+                                                            </span>
+                                                        ))}
+                                                        <span className="col-start-1 row-start-1 whitespace-nowrap">
+                                                            {selectedModel}
+                                                        </span>
+                                                    </span>
                                                     <ChevronDown className="h-3 w-3 opacity-50" />
                                                 </motion.div>
                                             </AnimatePresence>
