@@ -7,18 +7,32 @@
  * The real PrebuiltUI marquee-cards-with-hover-effect (see components/ui/
  * marquee-cards.tsx), fed Isaac's services + placeholder projects.
  */
-import { PenTool, Users } from "lucide-react";
+import { AppWindow, Component, Layers, ScanEye, SquareKanban } from "lucide-react";
 import { type MarqueeCard, MarqueeCards } from "@/components/ui/marquee-cards";
 
 const CARDS: MarqueeCard[] = [
   { kind: "Worked on", title: "TinaCMS — UI, UX & development", image: "/work/tinacms.jpg" },
-  { kind: "Project", title: "Project Alpha", placeholder: true, gradient: "from-fuchsia-500 via-brand to-indigo-700" },
+  {
+    kind: "Service",
+    title: "Design Systems",
+    description: "Reign in AI designs with a bespoke, minimal design system.",
+    icon: Component,
+  },
+  { kind: "Service", title: "UI and UX Testing", description: "Audit existing system UIs and UX flows.", icon: ScanEye },
   { kind: "Worked on", title: "Enterprise software solutions — SSW", image: "/work/ssw.jpg" },
-  { kind: "Project", title: "Project Beta", placeholder: true, gradient: "from-indigo-500 via-brand-deep to-fuchsia-600" },
-  { kind: "Service", title: "Graphic design", icon: PenTool, gradient: "from-brand-deep via-brand to-brand-muted" },
-  { kind: "Project", title: "Project Gamma", placeholder: true, gradient: "from-violet-500 via-brand to-brand-deep" },
-  { kind: "Service", title: "Scrum Master / Product Owner", icon: Users, gradient: "from-brand-muted via-brand-deep to-brand" },
-  { kind: "Project", title: "Project Delta", placeholder: true, gradient: "from-purple-500 via-brand to-indigo-700" },
+  { kind: "Service", title: "Frontend Development", description: "Pixel-perfect frontend implementation.", icon: AppWindow },
+  {
+    kind: "Service",
+    title: "Scrum Master",
+    description: "Bring the most out of your teams with formal scrum practices.",
+    icon: SquareKanban,
+  },
+  {
+    kind: "Service",
+    title: "Full-Stack Development",
+    description: "Development, testing and refactor of e2e software solutions.",
+    icon: Layers,
+  },
 ];
 
 export function ShowcaseSection() {

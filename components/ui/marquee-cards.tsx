@@ -6,10 +6,9 @@ import { useState } from "react";
 export type MarqueeCard = {
   title: string;
   kind: string;
+  description?: string;
   image?: string;
-  gradient?: string;
   icon?: LucideIcon;
-  placeholder?: boolean;
 };
 
 /**
@@ -70,12 +69,10 @@ function Card({ card }: { card: MarqueeCard }) {
         </div>
       )}
 
-      <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-black/25 px-4 opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">
-          {card.kind}
-          {card.placeholder ? " · placeholder" : ""}
-        </span>
+      <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-black/40 px-5 opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">{card.kind}</span>
         <p className="text-center text-lg font-semibold text-white">{card.title}</p>
+        {card.description && <p className="text-center text-sm leading-snug text-white/80">{card.description}</p>}
       </div>
     </div>
   );
