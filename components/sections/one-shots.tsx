@@ -179,7 +179,13 @@ export function OneShotsSection() {
                   transition={ROLL_TRANSITION}
                   className="pointer-events-none absolute inset-0"
                 >
-                  <div className="absolute inset-x-0 bottom-full h-[15%] bg-neutral-900" />
+                  <div
+                    className="absolute inset-x-0 bottom-full h-[15%]"
+                    style={{
+                      background:
+                        "linear-gradient(180deg,#a9a294 0%,#cfc8b8 20%,#ddd6c6 50%,#cfc8b8 80%,#a9a294 100%)",
+                    }}
+                  />
                 </motion.div>
               </AnimatePresence>
             </div>
