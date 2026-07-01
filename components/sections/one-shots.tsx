@@ -116,8 +116,8 @@ export function OneShotsSection() {
           lands with the billboard already revealing rather than at the empty start. */}
       <span id="one-shots" aria-hidden className="pointer-events-none absolute inset-x-0 top-0 md:top-[80vh]" />
       {/* Desktop: pinned billboard with rolling-window reveal + matrix3d poster */}
-      <div className="hidden h-screen items-center justify-center overflow-hidden px-8 py-10 md:sticky md:top-0 md:flex md:flex-col">
-        <div className="flex w-fit max-w-full flex-col gap-4">
+      <div className="hidden h-screen items-center justify-center overflow-hidden px-6 py-6 md:sticky md:top-0 md:flex md:flex-col">
+        <div className="flex w-fit max-w-full flex-col gap-3">
           {/* Title — sits just above the billboard */}
           <h2 className="flex items-center gap-2 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
             One-Shot Websites
@@ -143,7 +143,7 @@ export function OneShotsSection() {
             {/* Pinned billboard, revealed bottom-up */}
             <motion.div
               ref={sceneRef}
-              style={{ clipPath, WebkitClipPath: clipPath, height: "74vh", width: "calc(74vh * 1.5983)" }}
+              style={{ clipPath, WebkitClipPath: clipPath, height: "84vh", width: "calc(84vh * 1.5983)" }}
               className="relative"
             >
           <Image
