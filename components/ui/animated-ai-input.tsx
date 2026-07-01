@@ -65,14 +65,14 @@ function useAutoResizeTextarea({ minHeight, maxHeight }: UseAutoResizeTextareaPr
 
 // Persona "models" — people/action icons instead of provider logos.
 const MODELS = [
-    "marketing-seo-geo-mini",
+    "seo-geo-mini",
     "design-consultant-4-pro",
     "full-stack-isaac-o",
     "scrum-master-turbo",
 ];
 
 const MODEL_ICONS: Record<string, React.ReactNode> = {
-    "marketing-seo-geo-mini": <FaPersonArrowUpFromLine className="h-4 w-4" />,
+    "seo-geo-mini": <FaPersonArrowUpFromLine className="h-4 w-4" />,
     "design-consultant-4-pro": <FaPersonChalkboard className="h-4 w-4" />,
     "full-stack-isaac-o": <FaPersonMilitaryToPerson className="h-4 w-4" />,
     "scrum-master-turbo": <FaPersonHarassing className="h-4 w-4" />,
