@@ -32,7 +32,7 @@ const CORNERS: [number, number][] = [
   [0.450, 0.318], // top-left
   [0.671, 0.326], // top-right
   [0.671, 0.868], // bottom-right
-  [0.451, 0.897], // bottom-left
+  [0.453, 0.894], // bottom-left
 ];
 
 // Reference (frontal) size the demo/reflection fill before being warped. Aspect
