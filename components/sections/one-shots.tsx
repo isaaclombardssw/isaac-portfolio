@@ -29,10 +29,10 @@ const DEMOS: Demo[] = [
 // Poster-panel corners as fractions of billboard-base.png — TL, TR, BR, BL.
 // The panel is a trapezoid (recedes to the right). TODO(tune) in-browser.
 const CORNERS: [number, number][] = [
-  [0.447, 0.323], // top-left
-  [0.680, 0.339], // top-right
-  [0.682, 0.867], // bottom-right
-  [0.447, 0.907], // bottom-left
+  [0.447, 0.316], // top-left
+  [0.679, 0.341], // top-right
+  [0.681, 0.853], // bottom-right
+  [0.447, 0.894], // bottom-left
 ];
 
 // Reference (frontal) size the demo/reflection fill before being warped. Aspect
@@ -118,13 +118,11 @@ export function OneShotsSection() {
               className="absolute left-0 top-0 overflow-hidden"
               style={{ width: REF_W, height: REF_H, transform: matrix, transformOrigin: "0 0" }}
             >
-              <div className="absolute inset-0 bg-neutral-50">
-                <div className={`h-[14%] w-full ${demo.accent}`} />
-                <div className="flex h-[86%] flex-col items-center justify-center gap-4 px-10 text-center">
-                  <span className="text-4xl font-bold tracking-tight text-neutral-800">{demo.name}</span>
-                  <div className="h-2.5 w-1/2 rounded-full bg-neutral-200" />
-                  <div className="h-2.5 w-2/3 rounded-full bg-neutral-200" />
-                </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-white px-10 text-center">
+                <div className={`size-12 rounded-2xl ${demo.accent}`} />
+                <span className="text-4xl font-bold tracking-tight text-neutral-800">{demo.name}</span>
+                <div className="h-2.5 w-2/3 rounded-full bg-neutral-200" />
+                <div className="h-2.5 w-1/2 rounded-full bg-neutral-200" />
               </div>
               {/* Reflection — record-style screen-blend texture (rozsa) */}
               <Image
