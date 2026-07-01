@@ -74,10 +74,10 @@ export function HeroSection() {
     <section id="hero" className="flex min-h-screen items-center justify-center bg-background p-6 md:p-10">
       <div
         ref={cardRef}
-        className="relative flex aspect-[16/10] w-full max-w-6xl flex-col justify-between overflow-hidden bg-brand p-8 text-brand-foreground md:p-14"
+        className="relative flex min-h-[78dvh] w-full max-w-6xl flex-col justify-between overflow-hidden bg-brand p-8 text-brand-foreground md:min-h-0 md:aspect-[16/10] md:p-14"
       >
-        {/* Top: big left-aligned headline + top-right role */}
-        <div className="flex items-start justify-between gap-6">
+        {/* Top: big left-aligned headline + role (top-right on desktop, stacked on mobile) */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
           <h1 className="pointer-events-none max-w-[9ch] select-none font-heading text-6xl font-semibold uppercase leading-[0.9] tracking-tight md:text-8xl">
             <TextCursorProximity
               label="Isaac W. R. Lombard"
@@ -92,13 +92,13 @@ export function HeroSection() {
               }}
             />
           </h1>
-          <p className="max-w-[14ch] shrink-0 text-right text-sm font-medium tracking-wide text-brand-foreground/85 md:text-base">
+          <p className="text-sm font-medium tracking-wide text-brand-foreground/85 md:max-w-[14ch] md:shrink-0 md:text-right md:text-base">
             UX, AI and software project consulting
           </p>
         </div>
 
         {/* Bottom: nav icons with sliding-pill reveal */}
-        <nav ref={navRef} className="relative flex items-end justify-center gap-10 md:gap-16">
+        <nav ref={navRef} className="relative flex flex-wrap items-end justify-center gap-x-6 gap-y-5 md:flex-nowrap md:gap-16">
           <motion.div
             aria-hidden
             className="pointer-events-none absolute rounded-full bg-background"
@@ -125,13 +125,13 @@ export function HeroSection() {
                 aria-label={section.label}
                 onMouseEnter={() => onEnter(i)}
                 onFocus={() => onEnter(i)}
-                className="relative flex flex-col items-center gap-3 focus-visible:outline-none"
+                className="relative flex flex-col-reverse items-center gap-2 focus-visible:outline-none md:flex-col md:gap-3"
               >
                 <span
                   ref={(el) => {
                     labelRefs.current[i] = el;
                   }}
-                  className="relative z-10 whitespace-nowrap text-sm font-medium text-brand"
+                  className="relative z-10 whitespace-nowrap text-xs font-medium text-brand-foreground/85 md:text-sm md:text-brand"
                 >
                   {section.label}
                 </span>

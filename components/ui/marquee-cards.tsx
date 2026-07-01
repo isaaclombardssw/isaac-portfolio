@@ -63,7 +63,7 @@ function Card({ card }: { card: MarqueeCard }) {
   const Icon = card.icon;
   const external = card.href?.startsWith("http");
   const className =
-    "group relative mx-4 block h-[20rem] w-56 shrink-0 overflow-hidden transition-all duration-300 hover:scale-90";
+    "group relative mx-4 block h-64 w-48 shrink-0 overflow-hidden transition-all duration-300 hover:scale-90 md:h-[20rem] md:w-56";
   const inner = (
     <>
       {card.image ? (
@@ -75,10 +75,17 @@ function Card({ card }: { card: MarqueeCard }) {
         </div>
       )}
 
-      <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-black/40 px-5 opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100">
+      {/* Desktop: full info on hover. */}
+      <div className="absolute left-0 top-0 hidden h-full w-full flex-col items-center justify-center gap-2 bg-black/40 px-5 opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100 md:flex">
         <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">{card.kind}</span>
         <p className="text-center text-lg font-semibold text-white">{card.title}</p>
         {card.description && <p className="text-center text-sm leading-snug text-white/80">{card.description}</p>}
+      </div>
+
+      {/* Mobile: persistent caption (no hover on touch). */}
+      <div className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/80 via-black/45 to-transparent p-3 pt-8 md:hidden">
+        <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/70">{card.kind}</span>
+        <p className="text-sm font-semibold leading-tight text-white">{card.title}</p>
       </div>
     </>
   );

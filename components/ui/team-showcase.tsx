@@ -37,32 +37,64 @@ export default function MusicShowcase({ items, note }: { items: MusicItem[]; not
   ];
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl select-none flex-col items-start gap-10 px-4 md:flex-row md:gap-14 md:px-6">
-      {/* Left: staggered tile grid */}
-      <div className="flex flex-shrink-0 gap-3">
-        {columns.map((col, ci) => (
-          <div key={ci} className={cn("flex flex-col gap-3", col.offset)}>
-            {col.items.map((item) => (
-              <Tile
-                key={item.id}
-                item={item}
-                className={col.size}
-                hoveredId={hoveredId}
-                onHover={setHoveredId}
-              />
-            ))}
-          </div>
-        ))}
+    <div className="mx-auto w-full max-w-5xl select-none px-4 md:px-6">
+      {/* Desktop: staggered tile grid + hover-linked name list */}
+      <div className="hidden items-start gap-14 md:flex">
+        <div className="flex flex-shrink-0 gap-3">
+          {columns.map((col, ci) => (
+            <div key={ci} className={cn("flex flex-col gap-3", col.offset)}>
+              {col.items.map((item) => (
+                <Tile key={item.id} item={item} className={col.size} hoveredId={hoveredId} onHover={setHoveredId} />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="flex w-full flex-1 flex-col gap-5 pt-2">
+          {items.map((item) => (
+            <ItemRow key={item.id} item={item} hoveredId={hoveredId} onHover={setHoveredId} />
+          ))}
+          {note && <p className="mt-3 max-w-xs text-xs leading-relaxed text-foreground/45">* {note}</p>}
+        </div>
       </div>
 
-      {/* Right: name list */}
-      <div className="flex w-full flex-1 flex-col gap-5 pt-0 md:pt-2">
-        {items.map((item) => (
-          <ItemRow key={item.id} item={item} hoveredId={hoveredId} onHover={setHoveredId} />
-        ))}
-        {note && <p className="mt-3 max-w-xs text-xs leading-relaxed text-foreground/45">* {note}</p>}
+      {/* Mobile: tappable grid of album cards (tile + name + role folded together) */}
+      <div className="md:hidden">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+          {items.map((item) => (
+            <MobileCard key={item.id} item={item} />
+          ))}
+        </div>
+        {note && <p className="mt-8 text-xs leading-relaxed text-foreground/45">* {note}</p>}
       </div>
     </div>
+  );
+}
+
+function MobileCard({ item }: { item: MusicItem }) {
+  return (
+    <a
+      href={item.href}
+      target={item.href.startsWith("http") ? "_blank" : undefined}
+      rel="noopener noreferrer"
+      className="group flex flex-col gap-2.5"
+    >
+      <div
+        className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl border border-black/5 transition-transform duration-300 group-active:scale-[0.97]"
+        style={{ background: `radial-gradient(circle at 30% 25%, ${item.accent}44, ${item.accent}1f 55%, #ffffff 100%)` }}
+      >
+        <Glyph item={item} />
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[15px] font-semibold leading-tight tracking-tight text-foreground">{item.name}</span>
+          <ArrowUpRight className="h-3.5 w-3.5 flex-shrink-0" style={{ color: item.accent }} />
+        </div>
+        <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          {item.placeholder ? `${item.role} · coming soon` : item.role}
+        </p>
+      </div>
+    </a>
   );
 }
 
