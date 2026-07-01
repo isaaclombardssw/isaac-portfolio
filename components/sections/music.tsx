@@ -16,7 +16,7 @@ const ITEMS: MusicItem[] = [
   { id: "dude-like-dust", name: "Dude Like Dust", role: "Single", href: "https://isaacrozsa.com", accent: "#5c654c" },
   { id: "spotify", name: "Spotify", role: "Listen", href: "#", accent: "#1db954", platform: "spotify", placeholder: true },
   { id: "tidal", name: "Tidal", role: "Listen", href: "#", accent: "#0a0a0a", platform: "tidal", placeholder: true },
-  { id: "coming-soon", name: "Coming soon", role: "New sounds", href: "#", accent: "#6d28d9", placeholder: true },
+  { id: "coming-soon", name: "Coming soon", role: "New sounds", href: "#", accent: "#0000ff", placeholder: true },
 ];
 
 export function MusicSection() {

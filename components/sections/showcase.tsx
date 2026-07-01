@@ -27,13 +27,9 @@ export function ShowcaseSection() {
       id="work"
       className="flex min-h-screen flex-col items-center justify-center gap-12 overflow-hidden bg-background py-24 text-foreground"
     >
-      <header className="flex flex-col items-center gap-3 px-8 text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-brand">Work</p>
-        <h2 className="font-heading text-3xl font-semibold tracking-tight md:text-5xl">What I build</h2>
-        <p className="max-w-xl text-balance text-muted-foreground">
-          Services I offer and a selection of projects. Hover to pause and take a closer look.
-        </p>
-      </header>
+      <h2 className="font-heading text-4xl font-semibold tracking-tight md:text-6xl">
+        Development, UX and MGMT
+      </h2>
 
       <MarqueeCards cards={CARDS} />
     </section>

@@ -77,11 +77,11 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  /* Brand — deep violet #6D28D9 */
-  --brand: oklch(0.496 0.264 296.8);
+  /* Brand — pure blue #0000FF (from the text-cursor-proximity demo) */
+  --brand: oklch(0.452 0.313 264.05);
   --brand-foreground: oklch(0.985 0 0);
-  --brand-muted: oklch(0.62 0.2 296.8);
-  --brand-deep: oklch(0.376 0.216 296.8);
+  --brand-muted: oklch(0.576 0.237 264.05);
+  --brand-deep: oklch(0.332 0.256 264.05);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);

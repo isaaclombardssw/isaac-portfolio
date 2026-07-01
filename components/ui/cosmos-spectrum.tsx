@@ -7,9 +7,9 @@ import { useRef } from "react";
 const THEMES = {
   original: ["#340B05", "#0358F7", "#5092C7", "#E1ECFE", "#FFD400", "#FA3D1D", "#FD02F5", "#FFC0FD"],
   purple: ["#F3E8FF", "#E9D5FF", "#D8B4FE", "#C084FC", "#A855F7", "#9333EA", "#7C3AED", "#6B21B6"],
-  // Dark spread around the brand violet, woven with blues and cool greys —
+  // Dark spread around the brand blue #0000FF, woven with navy and cool greys —
   // darkest at the bottom, fading up.
-  violet: ["#0E1016", "#1B2138", "#243C82", "#3B2E9E", "#5B21B6", "#6D28D9", "#7C3AED", "#B79CFF"],
+  blue: ["#0A0D16", "#101836", "#142668", "#1533B0", "#0A38F0", "#0000FF", "#4060FF", "#AEC0FF"],
 } as const;
 
 const PATHS = [

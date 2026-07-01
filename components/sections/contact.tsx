@@ -17,7 +17,7 @@ export function ContactSection() {
       id="contact"
       className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-6 text-foreground"
     >
-      <p className="text-sm font-semibold uppercase tracking-[0.3em] text-brand">Let&apos;s build</p>
+      <p className="text-sm font-semibold uppercase tracking-[0.3em] text-brand">Human Chat</p>
       <LeadCaptureChat />
     </section>
   );

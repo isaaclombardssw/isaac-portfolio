@@ -13,9 +13,9 @@ import { NAV_SECTIONS } from "@/lib/sections";
  * reactive headline top-left (left-aligned), role top-right (where the demo's
  * date sits), nav marks along the bottom.
  *
- * Nav interaction: each icon's label is always rendered in brand violet — the
+ * Nav interaction: each icon's label is always rendered in brand blue — the
  * same colour as the card, so it's invisible — and a single WHITE pill slides
- * horizontally to sit behind the hovered icon's label, REVEALING it (violet on
+ * horizontally to sit behind the hovered icon's label, REVEALING it (blue on
  * white). The pill rests on the last-hovered icon rather than resetting.
  */
 

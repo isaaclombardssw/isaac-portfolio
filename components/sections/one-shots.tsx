@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronUp, Eye } from "lucide-react";
+import { ChevronDown, ChevronUp, CircleQuestionMark, Eye } from "lucide-react";
 import { AnimatePresence, motion, useMotionTemplate, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -171,10 +171,24 @@ export function OneShotsSection() {
         </motion.div>
 
         {/* Section label */}
-        <div className="pointer-events-none absolute left-8 top-10 z-20 max-w-xs">
-          <p className="text-sm font-medium uppercase tracking-[0.3em] text-foreground/50">One-shots</p>
-          <h2 className="mt-2 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
-            Sites built in a single shot
+        <div className="pointer-events-none absolute left-8 top-10 z-20 max-w-sm">
+          <h2 className="flex items-center gap-2 font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+            One-Shot Websites
+            <span className="group pointer-events-auto relative inline-flex">
+              <button
+                type="button"
+                aria-label="What's a one-shot website?"
+                className="text-foreground/40 transition hover:text-foreground/70 focus-visible:text-foreground/70 focus-visible:outline-none"
+              >
+                <CircleQuestionMark className="size-5" />
+              </button>
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 w-60 -translate-x-1/2 rounded-lg bg-neutral-900 px-3 py-2 text-center text-xs font-normal leading-snug text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100"
+              >
+                Websites built with AI in only 1 or very few prompts
+              </span>
+            </span>
           </h2>
         </div>
 

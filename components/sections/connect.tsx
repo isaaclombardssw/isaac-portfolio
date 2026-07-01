@@ -6,7 +6,7 @@
  *
  * White finale on a tall, pinned stage: the real cosmos-spectrum gradient bars
  * sit as a sliver at the bottom and pop up with scroll momentum behind a
- * sign-off and the two socials (dark, violet glow on hover).
+ * sign-off and the two socials (dark, blue glow on hover).
  */
 
 import { motion, useScroll } from "motion/react";
@@ -44,7 +44,7 @@ export function ConnectSection() {
   return (
     <section ref={ref} id="connect" className="relative h-[180vh] bg-background text-foreground">
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden p-8">
-        <CosmicSpectrum color="violet" blur progress={scrollYProgress} />
+        <CosmicSpectrum color="blue" blur progress={scrollYProgress} />
 
         <div className="relative z-10 flex flex-col items-center gap-10 text-center">
           <h2 className="font-heading text-4xl font-semibold tracking-tight text-background md:text-6xl">
