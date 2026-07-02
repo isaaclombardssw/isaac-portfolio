@@ -179,6 +179,11 @@ export function OneShotsSection() {
   // Rolling window: reveal the pinned image from the bottom up.
   const clipTop = useTransform(scrollYProgress, [0.05, 0.95], ["100%", "0%"]);
   const clipPath = useMotionTemplate`inset(${clipTop} 0% 0% 0%)`;
+  // The controls sit at the billboard's vertical centre, so wipe them in over the
+  // scroll window where the reveal edge crosses that band — they read as revealed
+  // by the same edge rather than running their own clip over the whole scroll.
+  const controlsClipTop = useTransform(scrollYProgress, [0.4, 0.6], ["100%", "0%"]);
+  const controlsClip = useMotionTemplate`inset(${controlsClipTop} 0% 0% 0%)`;
 
   const paginate = (dir: 1 | -1) => setPage(([i]) => [(i + dir + DEMOS.length) % DEMOS.length, dir]);
 
@@ -298,7 +303,7 @@ export function OneShotsSection() {
 
         {/* Left controls — revealed with the rolling window (not before it) so
             they never float over the blank frame. */}
-        <motion.div className="absolute left-8 top-1/2 z-20 -translate-y-1/2" style={{ clipPath, WebkitClipPath: clipPath }}>
+        <motion.div className="absolute left-8 top-1/2 z-20 -translate-y-1/2" style={{ clipPath: controlsClip, WebkitClipPath: controlsClip }}>
           <div className="flex flex-col items-center gap-3 rounded-full border border-black/10 bg-white/70 p-3 shadow-lg backdrop-blur-md">
             <button
               type="button"
