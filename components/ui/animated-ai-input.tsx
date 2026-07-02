@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check, ChevronDown, Loader2, Paperclip } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Loader2, Mail, Paperclip } from "lucide-react";
 import {
     FaPersonArrowUpFromLine,
     FaPersonChalkboard,
@@ -221,8 +221,8 @@ export function LeadCaptureChat() {
                             <button
                                 type="button"
                                 className={cn(
-                                    "rounded-lg p-2 transition-colors",
-                                    value.trim() ? "bg-brand text-brand-foreground" : "bg-black/5"
+                                    "group/send rounded-lg p-2 transition",
+                                    value.trim() ? "bg-brand text-brand-foreground hover:brightness-110" : "bg-black/5"
                                 )}
                                 aria-label="Send message"
                                 disabled={!value.trim() || status === "sending"}
@@ -231,12 +231,16 @@ export function LeadCaptureChat() {
                                 {status === "sending" ? (
                                     <Loader2 className="h-4 w-4 animate-spin" />
                                 ) : (
-                                    <ArrowRight
+                                    // Arrow slides up and out on hover, revealing the email icon.
+                                    <span
                                         className={cn(
-                                            "h-4 w-4 transition-opacity duration-200",
+                                            "relative block h-4 w-4 overflow-hidden transition-opacity duration-200",
                                             value.trim() ? "opacity-100" : "opacity-30"
                                         )}
-                                    />
+                                    >
+                                        <ArrowRight className="absolute inset-0 h-4 w-4 transition-transform duration-300 ease-out group-hover/send:-translate-y-full" />
+                                        <Mail className="absolute inset-0 h-4 w-4 translate-y-full transition-transform duration-300 ease-out group-hover/send:translate-y-0" />
+                                    </span>
                                 )}
                             </button>
                         </div>
