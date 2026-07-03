@@ -1,9 +1,10 @@
 "use client";
 
-import { ChevronDown, ChevronUp, CircleQuestionMark, ExternalLink } from "lucide-react";
+import { CalendarClock, ChevronDown, ChevronUp, CircleQuestionMark, ExternalLink, Palette, Sparkles, Workflow } from "lucide-react";
 import { AnimatePresence, motion, useMotionTemplate, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { BouncyAccordion } from "@/components/ui/be-ui-bouncy-accordion";
 
 /**
  * SECTION 4 — ONE-SHOTS (rolling-window billboard)
@@ -42,6 +43,56 @@ const DEMOS: Demo[] = [
     image: "/one-shots/chevro.jpg",
     caption: "Real-time puzzle game",
     object: "center",
+  },
+];
+
+// FAQ shown behind the billboard as a lead-in — visible while the window is blank,
+// then covered as the rolling window reveals. Copy is placeholder-ish for now.
+const FAQ_ITEMS = [
+  {
+    id: "what",
+    title: "What is a one-shot?",
+    icon: <Sparkles className="h-4 w-4" />,
+    description:
+      "A website built with AI in a single prompt — or very few. Layout, copy and styling all at once. Perfect for landing pages and concepts; the craft is in making them not look one-shot.",
+  },
+  {
+    id: "process",
+    title: "What's different about your dev process?",
+    icon: <Workflow className="h-4 w-4" />,
+    description:
+      "AI is the fast first draft, not the final answer. Everything gets a design-system pass, real UX thinking, and hand-tuned craft on top — so it holds up like it was built deliberately, not generated.",
+  },
+  {
+    id: "tips",
+    title: "Tips to improve the look & feel of my project?",
+    icon: <Palette className="h-4 w-4" />,
+    description: (
+      <>
+        Three things move the needle fast: adopt a small design system, give your AI proper design context, and lean on reusable skills.{" "}
+        <a
+          href="https://iwrl.net"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="font-medium text-brand underline-offset-2 hover:underline"
+        >
+          Full write-up →
+        </a>
+      </>
+    ),
+  },
+  {
+    id: "timeline",
+    title: "Timeline?",
+    icon: <CalendarClock className="h-4 w-4" />,
+    description: (
+      <>
+        Most one-shot-style sites land in days; a polished marketing site or small product UI is usually 1–3 weeks.{" "}
+        <a href="#contact" className="font-medium text-brand underline-offset-2 hover:underline">
+          Start a chat →
+        </a>
+      </>
+    ),
   },
 ];
 
@@ -213,11 +264,22 @@ export function OneShotsSection() {
 
         {/* Billboard stage — full width (flush); frosted edges + controls relative to it */}
         <div className="relative mx-auto w-full max-w-[1700px] shrink-0">
+          {/* FAQ lead-in: sits behind the billboard (z-0). Visible while the window
+              is blank; the rolling window (z-10) rolls up and covers it as it reveals. */}
+          <div className="absolute inset-x-0 top-0 z-0 px-6 pt-2">
+            <div className="mx-auto max-w-xl">
+              <BouncyAccordion
+                items={FAQ_ITEMS}
+                defaultValue="what"
+                classNames={{ item: "bg-black/[0.04]", trigger: "hover:bg-black/[0.02]" }}
+              />
+            </div>
+          </div>
           {/* Pinned billboard, revealed bottom-up */}
           <motion.div
             ref={sceneRef}
             style={{ clipPath, WebkitClipPath: clipPath }}
-            className="relative aspect-[2447/1531] w-full"
+            className="relative z-10 aspect-[2447/1531] w-full"
           >
           <Image
             src="/billboard/billboard-base.png"
