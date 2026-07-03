@@ -53,32 +53,48 @@ const FAQ_ITEMS = [
     id: "what",
     title: "What is a one-shot?",
     icon: <Sparkles className="h-4 w-4" />,
-    description:
-      "A website built with AI in a single prompt, or in my personal verbiage: under ~10. Layout, copy and styling all at once. These can get really ambitious; the craft is in making them not look one-shot.",
+    description: (
+      <div className="space-y-2.5">
+        <p>A website built with AI in a single prompt, or in my personal verbiage: under ~10.</p>
+        <p>Layout, copy and styling all at once.</p>
+        <p>These can get really ambitious; the craft is in making them not look one-shot.</p>
+      </div>
+    ),
   },
   {
     id: "process",
     title: "What's different about your dev process?",
     icon: <Workflow className="h-4 w-4" />,
-    description:
-      "AI is the fast first draft, not the final answer. Everything gets a design-system pass, real UX thinking, and hand-tuned craft on top — so it holds up like it was built deliberately, not generated.",
+    description: (
+      <div className="space-y-2.5">
+        <p>
+          AI is the fast first draft, not the final answer. Everything gets a design-system pass, real UX thinking, and hand-tuned craft on top — so it holds up like it was built deliberately, not generated.
+        </p>
+        <p>
+          This happens via skills, curated context and custom applications that makes use of my development skills alongside AI velocity to complete projects fast and to a high quality.
+        </p>
+      </div>
+    ),
   },
   {
     id: "tips",
     title: "Tips to improve the look & feel of my project?",
     icon: <Palette className="h-4 w-4" />,
     description: (
-      <>
-        2 human elements here: taste and an attention to detail. You can't make something beautiful without these, but you can get closer with a few key tools (curated over ad hoc components, design systems, skills), I've got a blog post about how I like to use them.{" "}
-        <a
-          href="https://iwrl.net"
-          target="_blank"
-          rel="noreferrer noopener"
-          className="font-medium text-brand underline-offset-2 hover:underline"
-        >
-          Full write-up →
-        </a>
-      </>
+      <div className="space-y-2.5">
+        <p>2 human elements here: taste and an attention to detail.</p>
+        <p>
+          You can't make something beautiful without these, but you can get closer with a few key tools (curated over ad hoc components, design systems, skills), I've got a blog post about how I like to use them.{" "}
+          <a
+            href="https://iwrl.net"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="font-medium text-brand underline-offset-2 hover:underline"
+          >
+            Full write-up →
+          </a>
+        </p>
+      </div>
     ),
   },
   {
@@ -86,12 +102,15 @@ const FAQ_ITEMS = [
     title: "Timeline?",
     icon: <CalendarClock className="h-4 w-4" />,
     description: (
-      <>
-        Most one-shot-style sites land in days; a polished marketing site or small product UI is usually 1–3 weeks.{" "}
-        <a href="#contact" className="font-medium text-brand underline-offset-2 hover:underline">
-          Start a chat →
-        </a>
-      </>
+      <div className="space-y-2.5">
+        <p>Most one-shot-style sites land in a day; depending on integrations, complexity and further refinement longer timelines up to a week.</p>
+        <p>
+          Timelines for data-driven applications are longer.{" "}
+          <a href="#contact" className="font-medium text-brand underline-offset-2 hover:underline">
+            Start a chat →
+          </a>
+        </p>
+      </div>
     ),
   },
 ];
