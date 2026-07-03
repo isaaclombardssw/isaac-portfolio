@@ -98,13 +98,10 @@ export function LeadCaptureChat() {
     const { textareaRef, adjustHeight } = useAutoResizeTextarea({ minHeight: 72, maxHeight: 300 });
     const [selectedModel, setSelectedModel] = useState("full-stack-isaac-o");
     const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-    // The message sends on the first tap; if it carried no email, a matching email
-    // box opens BELOW to capture a reply address (optional).
+    // A message with no email HOLDS (nothing sent) and opens an email field that
+    // grows out of the box's bottom — it only sends once the email is filled in.
     const [needEmail, setNeedEmail] = useState(false);
     const [replyEmail, setReplyEmail] = useState("");
-    const [emailSending, setEmailSending] = useState(false);
-    const [emailSent, setEmailSent] = useState(false);
-    const lastMessage = useRef("");
     const emailRef = useRef<HTMLInputElement>(null);
 
     const post = (body: Record<string, string>) =>
@@ -114,52 +111,53 @@ export function LeadCaptureChat() {
             body: JSON.stringify(body),
         });
 
-    // Focus the email field the moment its box opens.
+    // Focus the email field the moment it opens.
     useEffect(() => {
         if (needEmail) emailRef.current?.focus();
     }, [needEmail]);
 
-    const send = async () => {
+    // The single place a message actually goes out — with a reply email if we have one.
+    const doSend = async (email?: string) => {
         const message = value.trim();
         if (!message || status === "sending") return;
         setStatus("sending");
         try {
-            const res = await post({ message: `[${selectedModel}] ${message}` });
+            const body: Record<string, string> = { message: `[${selectedModel}] ${message}` };
+            if (email) body.replyEmail = email;
+            const res = await post(body);
             if (!res.ok) throw new Error();
-            lastMessage.current = message;
             setValue("");
+            setReplyEmail("");
+            setNeedEmail(false);
             adjustHeight(true);
             setStatus("sent");
-            if (!containsEmail(message)) setNeedEmail(true);
         } catch {
             setStatus("error");
         }
     };
 
-    const sendEmail = async () => {
-        const email = replyEmail.trim();
-        if (!email || emailSending) return;
-        setEmailSending(true);
-        try {
-            const res = await post({ message: `[${selectedModel}] ${lastMessage.current}`, replyEmail: email });
-            if (!res.ok) throw new Error();
-            setEmailSent(true);
-            setNeedEmail(false);
-        } catch {
-            /* keep the box open so they can retry */
-        } finally {
-            setEmailSending(false);
-        }
+    // Main button: send straight away if the message already has an email, otherwise
+    // open the email field and wait — nothing is sent until it's filled in.
+    const send = () => {
+        const message = value.trim();
+        if (!message || status === "sending" || needEmail || status === "sent") return;
+        if (containsEmail(message)) doSend();
+        else setNeedEmail(true);
     };
 
-    // Editing a new message drops back to a fresh compose state.
+    // Email button: sends the held message together with the reply email.
+    const sendEmail = () => {
+        if (!replyEmail.trim() || status === "sending") return;
+        doSend(replyEmail.trim());
+    };
+
+    // Editing after a send drops back to a fresh compose state.
     const onMessageChange = (v: string) => {
         setValue(v);
         adjustHeight();
         if (status === "sent" || status === "error") {
             setStatus("idle");
             setNeedEmail(false);
-            setEmailSent(false);
             setReplyEmail("");
         }
     };
@@ -259,21 +257,21 @@ export function LeadCaptureChat() {
                                 type="button"
                                 className={cn(
                                     "group/send rounded-lg p-2 transition",
-                                    status === "sent"
+                                    needEmail || status === "sent"
                                         ? "bg-emerald-500 text-white"
                                         : value.trim()
                                           ? "bg-brand text-brand-foreground hover:brightness-90"
                                           : "bg-black/5"
                                 )}
                                 aria-label="Send message"
-                                disabled={!value.trim() || status === "sending"}
+                                disabled={!value.trim() || status === "sending" || needEmail || status === "sent"}
                                 onClick={send}
                             >
-                                {status === "sending" ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : status === "sent" ? (
-                                    // Arrow has become a green tick — message is in.
+                                {needEmail || status === "sent" ? (
+                                    // Arrow has become a green tick — message captured; add the email to send.
                                     <Check className="h-4 w-4" />
+                                ) : status === "sending" ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
                                 ) : (
                                     <ArrowMailIcon active={!!value.trim()} />
                                 )}
@@ -283,7 +281,7 @@ export function LeadCaptureChat() {
 
                     {/* Email — expands out of the box's bottom border in the same grey area. */}
                     <AnimatePresence initial={false}>
-                        {status === "sent" && needEmail && !emailSent && (
+                        {needEmail && (
                             <motion.div
                                 key="email-row"
                                 initial={{ height: 0, opacity: 0 }}
@@ -314,10 +312,10 @@ export function LeadCaptureChat() {
                                             replyEmail.trim() ? "bg-brand text-brand-foreground hover:brightness-90" : "bg-black/5"
                                         )}
                                         aria-label="Send email"
-                                        disabled={!replyEmail.trim() || emailSending}
+                                        disabled={!replyEmail.trim() || status === "sending"}
                                         onClick={sendEmail}
                                     >
-                                        {emailSending ? (
+                                        {status === "sending" ? (
                                             <Loader2 className="h-4 w-4 animate-spin" />
                                         ) : (
                                             <ArrowMailIcon active={!!replyEmail.trim()} />
@@ -332,19 +330,7 @@ export function LeadCaptureChat() {
 
             {/* Below the box: a matching email box with its own send button, or a status line. */}
             <AnimatePresence initial={false} mode="popLayout">
-                {emailSent && (
-                    <motion.p
-                        key="got-it"
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className="mt-3 px-1 text-sm text-foreground/70"
-                    >
-                        Got it — I&apos;ll be in touch.
-                    </motion.p>
-                )}
-
-                {status === "sent" && !needEmail && !emailSent && (
+                {status === "sent" && (
                     <motion.p
                         key="sent"
                         initial={{ opacity: 0, y: 6 }}
