@@ -68,7 +68,7 @@ const FAQ_ITEMS = [
       <div className="space-y-2.5">
         <p>AI is the fast first draft, not the final answer.</p>
         <p>
-          This happens via skills, curated context, UX testing and custom applications that makes use of my development skills alongside AI velocity to complete projects fast and to a high quality.
+          This happens via skills, curated context, UX testing and custom applications that makes use of my development skills alongside AI velocity.
         </p>
       </div>
     ),
