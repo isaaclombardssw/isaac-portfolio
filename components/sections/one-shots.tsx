@@ -266,8 +266,8 @@ export function OneShotsSection() {
         <div className="relative mx-auto w-full max-w-[1700px] shrink-0">
           {/* FAQ lead-in: sits behind the billboard (z-0). Visible while the window
               is blank; the rolling window (z-10) rolls up and covers it as it reveals. */}
-          <div className="absolute inset-x-0 top-0 z-0 px-6 pt-2">
-            <div className="mx-auto max-w-xl">
+          <div className="absolute inset-0 z-0 flex items-center justify-center px-6">
+            <div className="w-full max-w-xl">
               <BouncyAccordion
                 items={FAQ_ITEMS}
                 defaultValue="what"
