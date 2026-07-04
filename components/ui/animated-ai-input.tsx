@@ -179,7 +179,7 @@ export function LeadCaptureChat() {
                             value={value}
                             placeholder="What can I build for you?"
                             className={cn(
-                                "w-full resize-none border-none bg-black/5 px-4 py-3 placeholder:text-black/70 focus-visible:ring-0 focus-visible:ring-offset-0",
+                                "w-full resize-none rounded-none border-none bg-black/5 px-4 py-3 placeholder:text-black/70 focus-visible:ring-0 focus-visible:ring-offset-0",
                                 "min-h-[72px]"
                             )}
                             ref={textareaRef}
