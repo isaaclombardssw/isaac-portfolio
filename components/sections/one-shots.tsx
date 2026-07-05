@@ -66,9 +66,9 @@ const FAQ_ITEMS = [
     icon: <Workflow className="h-4 w-4" />,
     description: (
       <div className="space-y-2.5">
-        <p>AI is the fast first draft, not the final answer.</p>
+        <p>AI is powerful, but I'm not interested in making slop.</p>
         <p>
-          This happens via skills, curated context, UX testing and custom applications that makes use of my development skills alongside AI velocity.
+          We can do this with skills, curated context, UX testing and custom applications that make use of my development skills alongside AI velocity.
         </p>
       </div>
     ),
